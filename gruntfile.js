@@ -6,14 +6,20 @@ module.exports = function (grunt) {
 		pkg: grunt.file.readJSON("package.json"),
 		concat: {
 			js: {
-				src: [	"node_modules/socket.io-client/socket.io.js",
-					"common/game.js",
-					"client/js/ai/ai_bob.js",
-					"client/js/ai/ai_banane.js",
-					"client/js/ai/ai_boin.js",
-					"client/js/view.js",
+				src: [
+					"client/js/global.js",
+					"client/js/mouse.js",
+					"client/js/satellite.js",
+					"client/js/player.js",
+					"client/js/mapgen.js",
+					"client/js/utils.js",
+					"client/js/space.js",
+					"client/js/dot.js",
 					"client/js/network.js",
-					"client/js/main.js"],
+					"client/js/star.js",
+					"client/js/inputs.js",
+					"client/js/game.js"
+				],
 				dest: "dist/dist.js"
 			}
 		},
@@ -40,7 +46,7 @@ module.exports = function (grunt) {
 				cwd: "client/html",
 				src: "*.html",
 				dest: "dist/"
-			},
+			}
 		},
 		htmllint: {
 			all: ["client/html/*.html"]
@@ -54,10 +60,10 @@ module.exports = function (grunt) {
 		replace: {
 			dist: {
 				options: {
-					{
+					favicon: {
 						match: "FAVICON_BASE64",
 						replacement: function () {return base64Img.base64Sync("dist/favicon.png");}
-					}]
+					}
 				},
 				files: [{
 					expand: true,
@@ -184,8 +190,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-wget");
 	grunt.loadNpmTasks("grunt-remove-logging");
 
-	grunt.registerTask("default", [	"wget", "hogan", "concat", "removelogging", "imagemin", "uglify",
-					"font_optimizer", "ttf2woff", "htmlmin",  "replace", "cssmin", "imageEmbed", "inline", "compress", "clean"]);
+	grunt.registerTask("default", ["concat", "removelogging", "imagemin", "uglify",
+					"htmlmin",  "replace", "imageEmbed", "inline", "compress", "clean"]);
 
 	grunt.registerTask("dev", ["hogan", "concat", "removelogging", "copy", "ttf2woff", "imagemin", "replace", "imageEmbed", "inline", "compress", "clean"]);
 	grunt.registerTask("test", ["csslint", "jshint", "jscs:main", "htmllint", "default"]);
