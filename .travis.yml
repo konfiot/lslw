@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- '0.12'
+- '0.10'
+env: SOCKETIO_SERVER=https://gravitygame.herokuapp.com/ PIWIK_SERVER=https://piwik-konfiot.rhcloud.com/
+deploy:
+  provider: heroku
+  api_key:
+    secure: XyOvdQIU1NSGzZ0g4mI5f8EKgDae4hPkIWsLpKlwsxlkM0iEAr/5eTaXQ/k0S7PhjNbD4iRLA1/RfOZo7aHE17KZ6QcCQOoFPkm+sqiAOa/FzEZu2X+M8TUx1XyyOtPvamL/lQJJWI3ApFGztTvkv7wPyFNdRXMjSAPn9AzJL1g=
+  app: gravitygame
+  on:
+    repo: konfiot/gravity
+    branch: master
+    node: '0.12'
+  skip_cleanup: true
+cache:
+  directories:
+    - node_modules/

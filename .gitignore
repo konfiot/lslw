@@ -1,0 +1,10 @@
+node_modules
+.c9revisions
+*.log
+dist.*
+mobile.dist.*
+scores.json
+dist
+.c9
+*~
+*.swp
