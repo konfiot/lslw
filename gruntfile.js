@@ -7,22 +7,14 @@ module.exports = function (grunt) {
 		concat: {
 			js: {
 				src: [	"node_modules/socket.io-client/socket.io.js",
-					"node_modules/hogan.js/lib/template.js",
 					"common/game.js",
 					"client/js/ai/ai_bob.js",
 					"client/js/ai/ai_banane.js",
 					"client/js/ai/ai_boin.js",
 					"client/js/view.js",
 					"client/js/network.js",
-					"dist/templates.js",
-					"client/js/main.js",
-					"dist/piwik.js"],
-
+					"client/js/main.js"],
 				dest: "dist/dist.js"
-			},
-			css: {
-				src: ["client/css/spinner.css", "client/css/main.css"],
-				dest: "dist/main.css"
 			}
 		},
 		uglify : {
@@ -42,12 +34,6 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		cssmin: {
-			main: {
-				src: "dist/main.css",
-				dest: "dist/main.css"
-			}
-		},
 		copy: {
 			html: {
 				expand: true,
@@ -55,20 +41,6 @@ module.exports = function (grunt) {
 				src: "*.html",
 				dest: "dist/"
 			},
-			font: {
-				expand: true,
-				cwd: "node_modules/roboto-fontface/fonts/",
-				src: "Roboto-Thin.*",
-				dest: "dist/"
-			}
-		},
-		csslint : {
-			options: {
-				"ids": false,
-				"bulletproof-font-face": false,
-				"box-sizing": false
-			},
-			src: ["client/css/*.css"]
 		},
 		htmllint: {
 			all: ["client/html/*.html"]
@@ -82,14 +54,6 @@ module.exports = function (grunt) {
 		replace: {
 			dist: {
 				options: {
-					patterns: [{
-						match: "URL_SOCKETIO_SERVER",
-						replacement: process.env.SOCKETIO_SERVER || ""
-					},
-					{
-						match: "URL_PIWIK_SERVER",
-						replacement: process.env.PIWIK_SERVER || ""
-					},
 					{
 						match: "FAVICON_BASE64",
 						replacement: function () {return base64Img.base64Sync("dist/favicon.png");}
@@ -153,37 +117,6 @@ module.exports = function (grunt) {
 				options: {
 					maxImageSize: 0
 				}
-			}
-		},
-		font_optimizer: {
-			Roboto: {
-				options: {
-					chars: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.,?;/:!*^@èé\"{}[(])=+}/-#ù%><\\↵",
-					includeFeatures: ["kern"]
-				},
-				files: {
-					"dist/": ["node_modules/roboto-fontface/fonts/Roboto-Thin.ttf"]
-				}
-			}
-		},
-		ttf2woff: {
-			roboto: {
-				src: ["dist/Roboto-Thin.ttf"],
-				dest: "dist/"
-			}
-		},
-		wget: {
-			piwik: {
-				files: {
-					"dist/piwik.js": process.env.PIWIK_SERVER + "/piwik.js"
-				}
-			}
-		},
-		hogan: {
-			templates: {
-				dest: "dist/templates.js",
-				src: "client/html/templates/*.html",
-				options : {binderName: "hulk"}
 			}
 		},
 		compress: {
