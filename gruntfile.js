@@ -168,15 +168,12 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-htmlmin");
-	grunt.loadNpmTasks("grunt-contrib-cssmin");
-	grunt.loadNpmTasks("grunt-contrib-csslint");
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-compress");
 	grunt.loadNpmTasks("grunt-contrib-imagemin");
-	grunt.loadNpmTasks("grunt-hogan");
 	grunt.loadNpmTasks("grunt-concurrent");
 	grunt.loadNpmTasks("grunt-nodemon");
 	grunt.loadNpmTasks("grunt-html");
@@ -185,9 +182,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-exec");
 	grunt.loadNpmTasks("grunt-inline");
 	grunt.loadNpmTasks("grunt-image-embed");
-	grunt.loadNpmTasks("grunt-font-optimizer");
-	grunt.loadNpmTasks("grunt-ttf2woff");
-	grunt.loadNpmTasks("grunt-wget");
 	grunt.loadNpmTasks("grunt-remove-logging");
 
 	grunt.registerTask("default", ["concat", "removelogging", "imagemin", "uglify",
