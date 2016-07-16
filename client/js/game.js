@@ -21,7 +21,7 @@ function draw(timestamp) {
 	var dt = (timestamp - time) / 1000; // Seconds
 	time = timestamp;
 	
-	var s = Math.min(player.scale, 1.0)
+	var s = Math.min(player.scale, 1.0);
 	ctx.clearRect(0, 0, canvas.width / s, canvas.height / s);
 	ctx.save();
 	ctx.translate(canvas.width/2,canvas.height/2);
@@ -38,7 +38,7 @@ function draw(timestamp) {
 	
 	ctx.restore();
 
-	T += 1
+	T += 1;
 	requestAnimationFrame(draw);
 }
 

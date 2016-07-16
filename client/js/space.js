@@ -38,7 +38,7 @@ function SpaceBackground(n) {
 	
 	// Draw the whole space on screen and handle the outbound stars
 	this.draw = function() {
-		var offScreenStars = []
+		var offScreenStars = [];
 		
 		// If inbound, draw. Else, mark the star
 		ctx.save();
@@ -82,4 +82,4 @@ function SpaceBackground(n) {
 		for (var i = 0; i < offScreenStars.length; i++)
 			this.distantStars[offScreenStars[i]] = this.createOutboundDistantStar();
 	};
-};
+}

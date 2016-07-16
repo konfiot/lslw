@@ -42,7 +42,7 @@ function Network(size) {
 		}
 		this.shipList.push([s1, s2, val, c, L, theta, id]);
 	};
-};
+}
 
 Network.prototype.update = function(dt) {
 	// Compute the new advancement of the ships, plus the conquest mechanic
@@ -105,7 +105,7 @@ Network.prototype.draw = function() {
 	}
 	
 	// Draws the automation indicator
-	for (var i=0; i < this.automationList.length; i++) {
+	for (i=0; i < this.automationList.length; i++) {
 		var star1 = net.starList[this.automationList[i][0]];
 		var star2 = net.starList[this.automationList[i][1]];
 		var dx = star2.x - star1.x;
@@ -137,7 +137,7 @@ Network.prototype.draw = function() {
 	}
 	
 	// Draws the ships
-	for (var i=0; i < this.shipList.length; i++) {
+	for (i=0; i < this.shipList.length; i++) {
 		var L = this.shipList[i][4];
 		var k = this.shipList[i][3];
 		var theta = this.shipList[i][5];
@@ -150,12 +150,12 @@ Network.prototype.draw = function() {
 	}
 	
 	// Draws the stars
-	for (var i=0; i < this.nStars; i++) {
+	for (i=0; i < this.nStars; i++) {
 		this.starList[i].draw();
 	}
 	
 	// Draws the satellites
-	for (var i=0; i < this.nSatellites; i++) {
+	for (i=0; i < this.nSatellites; i++) {
 		var sat = this.satelliteList[i];
 		
 		ctx.save();

@@ -23,7 +23,7 @@ Dot.prototype.update = function(dt) {
 			this.shipList.splice(i,1);
 		}
 	}
-}
+};
 
 Dot.prototype.draw = function() {
 	ctx.save();
@@ -64,13 +64,13 @@ Dot.prototype.draw = function() {
 		
 		drawShip(this.shipList[i][7],x,y,theta,0,0.5,highlight);
 	}
-}
+};
 
 Dot.prototype.isMouseOver = function() {
 	var r2 = 	Math.pow(mouse.worldX - this.x, 2) +
 				Math.pow(mouse.worldY - this.y, 2);
 	if (r2 < Math.pow(this.radius + 20, 2)) {
-		this.hover = true
+		this.hover = true;
 		if (mouse.isMouseDown) {
 			// TODO
 			s1 = 0;
@@ -92,7 +92,7 @@ Dot.prototype.isMouseOver = function() {
 			this.shipList.push([s1, Ox, Oy, R, alpha, alpha0, gamma, id]);
 		}
 	} else {
-		this.hover = false
+		this.hover = false;
 	}
-	return this.hover
-}
+	return this.hover;
+};

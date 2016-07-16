@@ -20,7 +20,7 @@ function Player(id) {
 	// Animation
 	// [star number, start time, progression]
 	this.selectionAnimation = [];
-};
+}
 
 Player.prototype.newSelection = function(starId) {
 	this.previousSelectedStar = this.selectedStar;
@@ -86,14 +86,14 @@ Player.prototype.update = function() {
 		if (	this.dragging && this.hoveredStar >= 0 && this.selectedStar >= 0
 				&& this.hoveredStar != this.selectedStar) {
 			// TODO Test if possible
-			net.automationList.push([this.selectedStar, this.hoveredStar])
+			net.automationList.push([this.selectedStar, this.hoveredStar]);
 			this.newSelection(-1);
 			this.clickedStar  = -1;
 		}
 		this.dragging = false;
 	} else {
 		if (this.hoveredStar >= 0) {
-			this.dragging = true
+			this.dragging = true;
 		}
 	}
 	
@@ -177,7 +177,7 @@ Player.prototype.draw = function() {
 		var current = this.selectionAnimation[i];
 		var s = net.starList[current[0]];
 		var inc = T * 0.01;
-		var r = s.radius + 5
+		var r = s.radius + 5;
 		
 		ctx.save();
 		
@@ -199,7 +199,7 @@ Player.prototype.draw = function() {
 	if (this.selectedStar >= 0) {
 		var s = net.starList[this.selectedStar];
 		var inc = T * 0.01;
-		var r = s.radius + 5
+		var r = s.radius + 5;
 		
 		ctx.save();
 		

@@ -14,7 +14,7 @@ function Star(id, x, y, points) {
 	// State of the star
 	this.hover = false;
 	this.select = false;
-};
+}
 
 // Update the score of the star
 Star.prototype.setPoints = function(p) {
@@ -73,9 +73,9 @@ Star.prototype.isMouseOver = function() {
 				Math.pow(mouse.worldY - this.y, 2);
 				// mouse.y + centerY - canvas.height/2 - this.y / scale
 	if (r2 < Math.pow(this.radius * 1.7, 2)) {
-		this.hover = true
+		this.hover = true;
 	} else {
-		this.hover = false
+		this.hover = false;
 	}
-	return this.hover
+	return this.hover;
 };

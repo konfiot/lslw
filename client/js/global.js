@@ -2,8 +2,8 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var gameWindow = canvas.getBoundingClientRect();
-var canvasMarginLeft = gameWindow.left
-var canvasMarginTop =  gameWindow.top
+var canvasMarginLeft = gameWindow.left;
+var canvasMarginTop =  gameWindow.top;
 
 // Colors
 var whiteColor = "rgb(255, 255, 255)";

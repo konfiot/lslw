@@ -13,7 +13,7 @@ generateStars = function(size) {
 		}
 	}
 	return starList;
-}
+};
 
 generateSatellites = function(nSat, size) {
 	satelliteList = [];
@@ -23,4 +23,4 @@ generateSatellites = function(nSat, size) {
 							parseInt(Math.random() * 3 + 2)));
 	}
 	return satelliteList;
-}
+};

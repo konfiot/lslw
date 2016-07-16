@@ -44,7 +44,7 @@ Ship.prototype.drawShip = function() {
 	ctx.lineTo(-10 * c, -10 * s);
 	ctx.fill();
 
-	if (this.value != 0) {
+	if (this.value !== 0) {
 		ctx.font = "lighter 25px arial";
 		ctx.fillStyle = whiteSemiColor;
 		ctx.textAlign="center";

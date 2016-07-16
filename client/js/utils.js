@@ -7,7 +7,7 @@ function translate(x, y) {
 worldMousePosition = function() {
 	mouse.worldX = player.centerX + (mouse.x - canvas.width/2)  / player.scale;
 	mouse.worldY = player.centerY + (mouse.y - canvas.height/2) / player.scale;
-}
+};
 
 function generateColor(n) {
 	var mainColor = "hsl(" + String(n) + ", 84%, 51%)";
@@ -26,7 +26,7 @@ function computeBridge(star1, star2) {
 
 	var theta = Math.acos(dx / L);
 	if (dy < 0) {
-		theta = -theta
+		theta = -theta;
 	}
 
 	L -= star1.radius + star2.radius;
@@ -43,7 +43,7 @@ function computeLink(star1, x2, y2) {
 
 	var theta = Math.acos(dx / L);
 	if (dy < 0) {
-		theta = -theta
+		theta = -theta;
 	}
 	
 	return [x, y, theta, L];
@@ -72,7 +72,7 @@ function drawShip(id, x, y, theta, val, factor, highlight) {
 	ctx.lineTo(-10 * c, -10 * s);
 	ctx.fill();
 
-	if (val != 0) {
+	if (val !== 0) {
 		ctx.font = "lighter 25px arial";
 		ctx.fillStyle = whiteSemiColor;
 		ctx.textAlign="center";

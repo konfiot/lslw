@@ -188,7 +188,7 @@ module.exports = function (grunt) {
 					"htmlmin",  "replace", "imageEmbed", "inline", "compress", "clean"]);
 
 	grunt.registerTask("dev", ["hogan", "concat", "removelogging", "copy", "ttf2woff", "imagemin", "replace", "imageEmbed", "inline", "compress", "clean"]);
-	grunt.registerTask("test", ["csslint", "jshint", "jscs:main", "htmllint", "default"]);
+	grunt.registerTask("test", ["jshint", "jscs:main", "htmllint", "default"]);
 	grunt.registerTask("server", ["concurrent:server"]);
 	grunt.registerTask("fix", ["jscs:fix"]);
 };
