@@ -45,7 +45,7 @@ SpaceBackground.prototype.createOutboundDistantStar = function () {
 // Draw the whole space on screen and handle the outbound stars
 SpaceBackground.prototype.draw = function () {
 	var offScreenStars = [];
-	
+
 	// If inbound, draw. Else, mark the star
 	context.background.save();
 
@@ -64,20 +64,11 @@ SpaceBackground.prototype.draw = function () {
 											parseInt(54 + 61 * t) + ")";
 	}
 
-	/*
-	context.background.clearRect(0, 0, canvas.background.width, canvas.background.height);
-	context.background.font = "lighter " + 70 + "px arial";
-	context.background.fillStyle = "rgb(0,0,0)";
-	context.background.textAlign = "center";
-	context.background.textBaseline = "middle";
-	context.background.fillText("YYY", 140, 105);*/
-
-	
 	for (var i = 0; i < this.nDistantStars; i++) {
 		var distantFactor = this.distantStars[i][3];
 		var x = this.distantStars[i][0] - playerstate.centerX * distantFactor;
 		var y = this.distantStars[i][1] - playerstate.centerY * distantFactor;
-		
+
 		if (x < canvas.background.width * 1.5 &&
 			x > -canvas.background.width * 1.5 &&
 			y > -canvas.background.height * 1.5 &&
@@ -86,7 +77,6 @@ SpaceBackground.prototype.draw = function () {
 			context.background.beginPath();
 			context.background.arc(x, y, this.distantStars[i][2], 0, Math.PI * 2);
 			context.background.fill();
-
 		} else {
 			offScreenStars.push(i);
 		}

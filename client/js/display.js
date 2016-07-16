@@ -4,132 +4,132 @@ The main display. Calls every draw() functions
 Display = function () {
 	// Setup the scene
 	var s = Math.min(playerstate.scale, 1.0);
-	
+
 	for (var layer in context) {
 		context[layer].clearRect(0, 0, canvas[layer].width / s, canvas[layer].height / s);
 
 		context[layer].save();
 
 		context[layer].translate(canvas[layer].width / 2, canvas[layer].height / 2);
-		context[layer].scale(playerstate.scale, playerstate.scale);		
+		context[layer].scale(playerstate.scale, playerstate.scale);
 	}
 
 	// Draw the space
 	space.draw();
-	
+
 	// Draw what the player should see
 	playerDisplay();
-	
+
 	// Draw the ingame elements
 	var obj = null;
-	
+
 	for (var i in engine.game) {
 		switch (engine.game[i].type) {
 			case "star": // Draw a STAR
-			obj = engine.game[i];
-			ctx = context.stellar;
-			
-			ctx.save();
+				obj = engine.game[i];
+				ctx = context.stellar;
 
-			translate(obj.x, obj.y);
-			ctx.fillStyle = colorList[obj.id][0];
-			ctx.strokeStyle = colorList[obj.id][1];
-			ctx.lineWidth = 6;
+				ctx.save();
 
-			ctx.beginPath();
-			ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
-			ctx.fill();
-			ctx.stroke();
-			ctx.closePath();
+				translate(obj.x, obj.y);
+				ctx.fillStyle = colorList[obj.id][0];
+				ctx.strokeStyle = colorList[obj.id][1];
+				ctx.lineWidth = 6;
 
-			// Reflection effect
-			ctx.fillStyle = whiteTransparentColor;
-			var r = obj.radius - 9;
+				ctx.beginPath();
+				ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
+				ctx.fill();
+				ctx.stroke();
+				ctx.closePath();
 
-			ctx.beginPath();
-			ctx.arc(0, 0, r, Math.PI, 0);
-			ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
-			ctx.fill();
-			ctx.closePath();
+				// Reflection effect
+				ctx.fillStyle = whiteTransparentColor;
+				var r = obj.radius - 9;
 
-			// Write the score
-			ctx.font = "lighter " + String(parseInt(obj.radius)) + "px arial";
-			ctx.fillStyle = whiteSemiColor;
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
-			ctx.fillText(obj.count, 0, 5);
+				ctx.beginPath();
+				ctx.arc(0, 0, r, Math.PI, 0);
+				ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
+				ctx.fill();
+				ctx.closePath();
 
-			ctx.restore();
-			break;
-			
+				// Write the score
+				ctx.font = "lighter " + String(parseInt(obj.radius)) + "px arial";
+				ctx.fillStyle = whiteSemiColor;
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				ctx.fillText(obj.count, 0, 5);
+
+				ctx.restore();
+				break;
+
 			case "satellite": // Draw a SATELLITE
-			obj = engine.game[i];
-			ctx = context.stellar;
+				obj = engine.game[i];
+				ctx = context.stellar;
 
-			ctx.save();
+				ctx.save();
 
-			translate(obj.x, obj.y);
-			ctx.fillStyle = whiteColor;
-			ctx.shadowColor = whiteColor;
-			ctx.shadowBlur = 5;
-			ctx.strokeStyle = whiteSemiColor;
-			ctx.lineWidth = 4;
+				translate(obj.x, obj.y);
+				ctx.fillStyle = whiteColor;
+				ctx.shadowColor = whiteColor;
+				ctx.shadowBlur = 5;
+				ctx.strokeStyle = whiteSemiColor;
+				ctx.lineWidth = 4;
 
-			ctx.beginPath();
-			ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
-			ctx.fill();
-			ctx.stroke();
+				ctx.beginPath();
+				ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
+				ctx.fill();
+				ctx.stroke();
 
-			ctx.restore();
-			break;
-			
+				ctx.restore();
+				break;
+
 			case "ship": // Draw a SHIP
-			obj = engine.game[i];
-			ctx = context.ships;
-			
-			var connectionLength = engine.game.ships[i][4];
-			var k = engine.game.ships[i][3];
-			var connectionAngle = engine.game.ships[i][5];
-			var id = engine.game.stars[engine.game.ships[i][0]].id;
+				obj = engine.game[i];
+				ctx = context.ships;
 
-			var x = engine.game.stars[engine.game.ships[i][0]].x + connectionLength * k * Math.cos(connectionAngle);
-			var y = engine.game.stars[engine.game.ships[i][0]].y + connectionLength * k * Math.sin(connectionAngle);
+				var connectionLength = engine.game.ships[i][4];
+				var k = engine.game.ships[i][3];
+				var connectionAngle = engine.game.ships[i][5];
+				var id = engine.game.stars[engine.game.ships[i][0]].id;
 
-			drawShip(engine.game.ships[i][6], x, y, connectionAngle, engine.game.ships[i][2], 1, false);
-			break;
-			
+				var x = engine.game.stars[engine.game.ships[i][0]].x + connectionLength * k * Math.cos(connectionAngle);
+				var y = engine.game.stars[engine.game.ships[i][0]].y + connectionLength * k * Math.sin(connectionAngle);
+
+				drawShip(engine.game.ships[i][6], x, y, connectionAngle, engine.game.ships[i][2], 1, false);
+				break;
+
 			case "link": // Draw a LINK
-			obj = engine.game[i];
-			ctx = context.background;
-			
-			ctx.save();
+				obj = engine.game[i];
+				ctx = context.background;
 
-			var s1 = engine.game[obj.startId];
-			var s2 = engine.game[obj.endId];
+				ctx.save();
 
-			translate(s1.x, s1.y);
-			ctx.setLineDash([20, 8]);
+				var s1 = engine.game[obj.startId];
+				var s2 = engine.game[obj.endId];
 
-			ctx.lineWidth = 3;
+				translate(s1.x, s1.y);
+				ctx.setLineDash([20, 8]);
 
-			if (s1.id == s2.id) {
-				ctx.strokeStyle = colorList[s1.id][0];
-			} else {
-				ctx.strokeStyle = whiteColor;
-			}
+				ctx.lineWidth = 3;
 
-			ctx.beginPath();
-			ctx.moveTo(0, 0);
-			ctx.lineTo(s2.x - s1.x, s2.y - s1.y);
-			ctx.stroke();
-			ctx.closePath();
+				if (s1.id == s2.id) {
+					ctx.strokeStyle = colorList[s1.id][0];
+				} else {
+					ctx.strokeStyle = whiteColor;
+				}
 
-			ctx.restore();
-			break;
+				ctx.beginPath();
+				ctx.moveTo(0, 0);
+				ctx.lineTo(s2.x - s1.x, s2.y - s1.y);
+				ctx.stroke();
+				ctx.closePath();
+
+				ctx.restore();
+				break;
 		}
 	}
-	
-/*
+
+	/*
 	// TODO chose ships ?
 	for (i = 0; i < engine.game.ships.length; i++) {
 		ctx.save();

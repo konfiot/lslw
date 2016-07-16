@@ -6,7 +6,7 @@ function Engine(io, gameConstants) {
 	this.game = {};
 	this.options = gameConstants;
 	this.automationList = [];
-	
+
 	colorList.push(["hsl(180, 0%, 51%)", "hsl(180, 0%, 67%)"],
 						generateColor(220), generateColor(100));
 }
@@ -66,13 +66,13 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 	}
 };
 
-Engine.prototype.addStar = function (x, y, count, id, playerId) {
+Engine.prototype.addStar = function (x, y, count, playerId, id) {
 	if (this.game[id] !== undefined || count < 0) {
 		return false;
 	}
-	
+
 	var radius = 45 + Math.log(count + 1) * 5;
-	
+
 	this.game[id] = {
 		type: "star",
 		x: x,
@@ -81,5 +81,24 @@ Engine.prototype.addStar = function (x, y, count, id, playerId) {
 		id: playerId,
 		radius: radius
 	};
+
+	return true;
+};
+
+Engine.prototype.addSatellite = function (x, y, count, id) {
+	if (this.game[id] !== undefined || count < 0) {
+		return false;
+	}
+
+	var radius = 2 + 2 * count;
+
+	this.game[id] = {
+		type: "satellite",
+		x: x,
+		y: y,
+		count: count,
+		radius: radius
+	};
+
 	return true;
 };

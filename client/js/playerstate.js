@@ -51,11 +51,11 @@ PlayerState.prototype.update = function () {
 			}
 		}
 	}
-	
+
 	// Update which star or which satellite is hovered
 	this.hoveredStarId = -1;
 	this.hoveredSatelliteId = -1;
-	
+
 	for (var j in engine.game) {
 		if (engine.game[j].type == "star" || engine.game[j].type == "satellite") {
 			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
@@ -94,6 +94,7 @@ PlayerState.prototype.update = function () {
 
 	// Is the mouse still dragging ?
 	if (!mouse.isMouseDown) {
+
 		if (this.dragging && this.hoveredStarId >= 0 &&
 			this.selectedStar >= 0 && this.hoveredStarId != this.selectedStar) {
 			// TODO REQUEST
@@ -115,8 +116,8 @@ PlayerState.prototype.update = function () {
 
 		if (p > 0) {
 			// TODO REQUEST
-			//net.addNewShip(this.previousClickedStar, this.clickedStar, p);
-			//net.starList[this.previousClickedStar].setPoints(0);
+			// net.addNewShip(this.previousClickedStar, this.clickedStar, p);
+			// net.starList[this.previousClickedStar].setPoints(0);
 		}
 
 		this.newSelection(-1);
