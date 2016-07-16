@@ -1,12 +1,12 @@
 // Transltates the content to the viewer position
 function translate(x, y) {
-	ctx.translate(-player.centerX + x,-player.centerY + y);
+	ctx.translate(-player.centerX + x, -player.centerY + y);
 }
 
 // Compute the position of the mouse in world coordinates
-worldMousePosition = function() {
-	mouse.worldX = player.centerX + (mouse.x - canvas.width/2)  / player.scale;
-	mouse.worldY = player.centerY + (mouse.y - canvas.height/2) / player.scale;
+worldMousePosition = function () {
+	mouse.worldX = player.centerX + (mouse.x - canvas.width / 2) / player.scale;
+	mouse.worldY = player.centerY + (mouse.y - canvas.height / 2) / player.scale;
 };
 
 function generateColor(n) {
@@ -25,11 +25,13 @@ function computeBridge(star1, star2) {
 	var y = dy * star1.radius / L + star1.y;
 
 	var theta = Math.acos(dx / L);
+
 	if (dy < 0) {
 		theta = -theta;
 	}
 
 	L -= star1.radius + star2.radius;
+
 	return [x, y, theta, L];
 }
 
@@ -42,10 +44,11 @@ function computeLink(star1, x2, y2) {
 	var y = dy * star1.radius / L + star1.y;
 
 	var theta = Math.acos(dx / L);
+
 	if (dy < 0) {
 		theta = -theta;
 	}
-	
+
 	return [x, y, theta, L];
 }
 
@@ -55,16 +58,16 @@ function drawShip(id, x, y, theta, val, factor, highlight) {
 
 	var c = Math.cos(theta);
 	var s = Math.sin(theta);
-	
+
 	translate(x, y);
 	ctx.scale(factor, factor);
 	ctx.fillStyle = colorList[id][0];
-	
+
 	if (highlight) {
 		ctx.shadowColor = whiteSemiColor;
 		ctx.shadowBlur = 12;
 	}
-	
+
 	ctx.beginPath();
 	ctx.moveTo(-15 * s, 15 * c);
 	ctx.lineTo(35 * c, 35 * s);
@@ -75,8 +78,8 @@ function drawShip(id, x, y, theta, val, factor, highlight) {
 	if (val !== 0) {
 		ctx.font = "lighter 25px arial";
 		ctx.fillStyle = whiteSemiColor;
-		ctx.textAlign="center";
-		ctx.textBaseline = 'middle';
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
 		ctx.fillText(val, 30 * s, -30 * c);
 	}
 
