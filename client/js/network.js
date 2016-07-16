@@ -61,7 +61,7 @@ Network.prototype.update = function (dt) {
 			var star1 = this.starList[this.shipList[i][0]];
 			var star2 = this.starList[this.shipList[i][1]];
 
-			// Both stars belong to the same player
+			// Both stars belong to the same playerstate
 
 			if (star1.id == star2.id) {
 				star2.setPoints(p + this.shipList[i][2]);

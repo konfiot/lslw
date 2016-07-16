@@ -32,8 +32,8 @@ function SpaceBackground(n) {
 			}
 		}
 
-		var x = (_x - 1.5) * canvas.width / player.scale + player.centerX * distantFactor;
-		var y = (_y - 1.5) * canvas.height / player.scale + player.centerY * distantFactor;
+		var x = (_x - 1.5) * canvas.width / playerstate.scale + playerstate.centerX * distantFactor;
+		var y = (_y - 1.5) * canvas.height / playerstate.scale + playerstate.centerY * distantFactor;
 
 		// Radius of the distant star
 		var radius = Math.random() * 3 + 4;
@@ -48,15 +48,15 @@ function SpaceBackground(n) {
 		// If inbound, draw. Else, mark the star
 		ctx.save();
 
-		if (player.scale > 0.50) {
+		if (playerstate.scale > 0.50) {
 			// Normal color
 			ctx.fillStyle = "rgb(65, 15, 115)";
-		} else if (player.scale < 0.30) {
+		} else if (playerstate.scale < 0.30) {
 			// Invisible
 			ctx.fillStyle = backgroundColor;
 		} else {
 			// Fade
-			var t = (player.scale - 0.3) / 0.2;
+			var t = (playerstate.scale - 0.3) / 0.2;
 
 			ctx.fillStyle = "rgb(" +	parseInt(30 + 35 * t) + "," +
 										parseInt(8 + 7 * t) + "," +
@@ -65,8 +65,8 @@ function SpaceBackground(n) {
 
 		for (var i = 0; i < this.nDistantStars; i++) {
 			var distantFactor = this.distantStars[i][3];
-			var x = this.distantStars[i][0] - player.centerX * distantFactor;
-			var y = this.distantStars[i][1] - player.centerY * distantFactor;
+			var x = this.distantStars[i][0] - playerstate.centerX * distantFactor;
+			var y = this.distantStars[i][1] - playerstate.centerY * distantFactor;
 
 			if (x < canvas.width * 1.5 &&
 				x > -canvas.width * 1.5 &&

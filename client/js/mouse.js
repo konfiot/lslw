@@ -20,13 +20,13 @@ Mouse.prototype.downHandler = function (e) {
 		this.lastClickedY = this.y;
 	}
 	this.isMouseDown = true;
-	player.update();
+	playerstate.update();
 };
 
 // When the mouse button is released
 Mouse.prototype.upHandler = function (e) {
 	this.isMouseDown = false;
-	player.update();
+	playerstate.update();
 };
 
 // When the mouse wheel is rotated
@@ -40,13 +40,13 @@ Mouse.prototype.wheelHandler = function (e) {
 	}
 
 	// Set boundaries
-	var newScale = player.scale * (1 + delta * 0.05);
+	var newScale = playerstate.scale * (1 + delta * 0.05);
 
 	if (newScale < 3 || delta < 0) {
-		player.scale = newScale;
+		playerstate.scale = newScale;
 	} else {
 		// Custom formula
-		player.scale = player.scale + 0.15 * delta * Math.exp(-3 * 0.1) * Math.exp(-player.scale * 0.1);
+		playerstate.scale = playerstate.scale + 0.15 * delta * Math.exp(-3 * 0.1) * Math.exp(-playerstate.scale * 0.1);
 	}
 
 	if (e.preventDefault) {
@@ -68,10 +68,10 @@ Mouse.prototype.moveHandler = function (e) {
 	var deltaCenter = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
 	if (this.isMouseDown && deltaCenter > 3) {
-		player.mouseDownMoved(dx, dy);
+		playerstate.mouseDownMoved(dx, dy);
 	}
 
-	player.update();
+	playerstate.update();
 
 	this.x = _mouseX;
 	this.y = _mouseY;
