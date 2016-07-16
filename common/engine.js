@@ -1,11 +1,14 @@
 /*
 The engine class, shared by the client and the server
 */
-function Engine(io, callback, gameConstants) {
+function Engine(io, gameConstants) {
 	this.io = io;
-	this.update = callback;
 	this.game = {};
 	this.options = gameConstants;
+	this.automationList = [];
+	
+	colorList.push(["hsl(180, 0%, 51%)", "hsl(180, 0%, 67%)"],
+						generateColor(220), generateColor(100));
 }
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
@@ -18,7 +21,7 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 
 	for (var i in this.game) {
 		// Only look at player's stars
-		if (this.game[i].id == playerId && this.game[i].type = "s")  {
+		if (this.game[i].id == playerId && this.game[i].type == "s")  {
 			r2 = Math.pow(x - this.game.stars[i].x, 2) +
 					Math.pow(y - this.game[i].y, 2);
 
@@ -30,7 +33,7 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	}
 
 	return closestStar;
-}
+};
 
 // TODO
 function possibleTrip(fromId, toId, number) {
@@ -38,20 +41,18 @@ function possibleTrip(fromId, toId, number) {
 
 Engine.prototype.fullSync = function () {
 	this.game = io.getGameData();
-	this.update(this.game);
 };
 
 Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
-	if (this.game[satelliteId] === undefined || this.game[satelliteId].type !== "s") { // Check if given id exists and is assigned to a satellite
-		callback(false);
-	}
+	// Check if given id exists and is assigned to a satellite
+	if (this.game[satelliteId] !== undefined || this.game[satelliteId].type === "s") {
+		nearest = getNearestStar(playerId, satelliteId);
 
-	nearest = getNearestStar(playerId, satelliteId);
-
-	if (nearest >= 0) {
-		this.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, callback)
-	} else {
-		callback(false);
+		if (nearest >= 0) {
+			this.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, callback);
+		} else {
+			callback(false);
+		}
 	}
 };
 
@@ -60,27 +61,25 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 		this.io.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				this.game[res.id] = res.data;
-				callback(true);
-				this.update(this.game);
-			} else {
-				callback(false);
 			}
 		});
-	} else {
-		callback(false);
 	}
 };
 
 Engine.prototype.addStar = function (x, y, count, id, playerId) {
-	if (this.game[id] !== undefined) {
+	if (this.game[id] !== undefined || count < 0) {
 		return false;
 	}
-
+	
+	var radius = 45 + Math.log(count + 1) * 5;
+	
 	this.game[id] = {
+		type: "star",
 		x: x,
-		y: y
+		y: y,
 		count: count,
-		player = playerId
+		id: playerId,
+		radius: radius
 	};
 	return true;
 };

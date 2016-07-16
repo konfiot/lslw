@@ -5,14 +5,14 @@ then send requests to the engine.
 function PlayerState(id) {
 	this.id = id;
 
-	this.hoveredStar = -1;
+	this.hoveredStarId = -1;
 	this.selectedStar = -1;
 	this.clickedStar = -1;
 	this.previousSelectedStar = -1;
 	this.previousClickedStar = -1;
 	this.isDragging = false;
 
-	this.hoveredSatellite = -1;
+	this.hoveredSatelliteId = -1;
 
 	this.centerX = 0;
 	this.centerY = 0;
@@ -51,32 +51,39 @@ PlayerState.prototype.update = function () {
 			}
 		}
 	}
+	
+	// Update which star or which satellite is hovered
+	this.hoveredStarId = -1;
+	this.hoveredSatelliteId = -1;
+	
+	for (var j in engine.game) {
+		if (engine.game[j].type == "star" || engine.game[j].type == "satellite") {
+			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
+							Math.pow(mouse.worldY - engine.game[j].y, 2);
 
-	// Update which star is hovered
-	this.hoveredStar = -1;
+			if (radius2 < Math.pow(engine.game[j].radius * 1.5 + 10 / playerstate.scale, 2)) {
 
-	for (var j = 0; j < net.nStars; j++) {
-		var radiusStar2 =	Math.pow(mouse.worldX - net.starList[j].x, 2) +
-							Math.pow(mouse.worldY - net.starList[j].y, 2);
-
-		if (radiusStar2 < Math.pow(net.starList[j].radius * 1.5 + 10 / playerstate.scale, 2)) {
-			this.hoveredStar = j;
-			j = net.nStars; // Stop loop
+				if (engine.game[j].type == "star") {
+					this.hoveredStarId = j;
+				} else {
+					this.hoveredSatelliteId = j;
+				}
+			}
 		}
 	}
 
 	// Update which star is selected
-	if (mouse.isMouseDown && !this.dragging && this.hoveredStar >= 0) {
+	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId >= 0) {
 		this.previousClickedStar = this.clickedStar;
-		this.clickedStar = this.hoveredStar;
+		this.clickedStar = this.hoveredStarId;
 
-		if (net.starList[this.hoveredStar].id == this.id) {
-			this.newSelection(this.hoveredStar);
+		if (engine.game[this.hoveredStarId].id == this.id) {
+			this.newSelection(this.hoveredStarId);
 		}
 	}
 
 	// If clicked out a star, deselect
-	if (this.hoveredStar < 0 && mouse.isMouseDown) {
+	if (this.hoveredStarId < 0 && mouse.isMouseDown) {
 		delta = Math.pow(mouse.lastClickedX - mouse.x, 2) + Math.pow(mouse.lastClickedY - mouse.y, 2);
 
 		if (delta < 2) {
@@ -87,47 +94,33 @@ PlayerState.prototype.update = function () {
 
 	// Is the mouse still dragging ?
 	if (!mouse.isMouseDown) {
-		if (this.dragging && this.hoveredStar >= 0 &&
-			this.selectedStar >= 0 && this.hoveredStar != this.selectedStar) {
+		if (this.dragging && this.hoveredStarId >= 0 &&
+			this.selectedStar >= 0 && this.hoveredStarId != this.selectedStar) {
 			// TODO REQUEST
-			net.automationList.push([this.selectedStar, this.hoveredStar]);
+			engine.automationList.push([this.selectedStar, this.hoveredStarId]);
 			this.newSelection(-1);
 			this.clickedStar  = -1;
 		}
 		this.dragging = false;
 	} else {
-		if (this.hoveredStar >= 0) {
+		if (this.hoveredStarId >= 0) {
 			this.dragging = true;
 		}
 	}
 
 	// If the playerstate whishes to, a ship is sent
 	if (this.clickedStar >= 0 && this.previousClickedStar >= 0 &&
-		this.previousClickedStar != this.clickedStar && net.starList[this.previousClickedStar].id == this.id) {
-		var p = net.starList[this.previousClickedStar].points;
+		this.previousClickedStar != this.clickedStar && engine.game[this.previousClickedStar].id == this.id) {
+		var p = engine.game[this.previousClickedStar].points;
 
 		if (p > 0) {
 			// TODO REQUEST
-			net.addNewShip(this.previousClickedStar, this.clickedStar, p);
-			net.starList[this.previousClickedStar].setPoints(0);
+			//net.addNewShip(this.previousClickedStar, this.clickedStar, p);
+			//net.starList[this.previousClickedStar].setPoints(0);
 		}
 
 		this.newSelection(-1);
 		this.clickedStar = -1;
-	}
-
-	// Update which satellite is hovered
-	// NEED OPTIMIZATION
-	this.hoveredSatellite = -1;
-
-	for (var k = 0; k < net.nSatellites; k++) {
-		var radiusSat2 =	Math.pow(mouse.worldX - net.satelliteList[k].x, 2) +
-							Math.pow(mouse.worldY - net.satelliteList[k].y, 2);
-
-		if (radiusSat2 < Math.pow(net.satelliteList[k].radius * 1.5 + 10 / playerstate.scale, 2)) {
-			this.hoveredSatellite = k;
-			k = net.nSatellites; // Stop loop
-		}
 	}
 };
 

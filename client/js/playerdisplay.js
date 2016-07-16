@@ -3,11 +3,11 @@ Draws the information that only the playerstate can see
 */
 playerDisplay = function () {
 	// Draw on the ships layer
-	ctx = context.ships
+	ctx = context.ships;
 	
 	// Draws an aura around the hovered star
-	if (playerstate.hoveredStar >= 0) {
-		var hStar = net.starList[playerstate.hoveredStar];
+	if (playerstate.hoveredStarId >= 0) {
+		var hStar = engine.game[playerstate.hoveredStarId];
 
 		ctx.save();
 
@@ -25,8 +25,8 @@ playerDisplay = function () {
 	}
 
 	// Draws an aura around the hovered satellite
-	if (playerstate.hoveredSatellite >= 0) {
-		var hSat = net.satelliteList[playerstate.hoveredSatellite];
+	if (playerstate.hoveredSatelliteId >= 0) {
+		var hSat = engine.game[playerstate.hoveredSatelliteId];
 
 		ctx.save();
 
@@ -45,9 +45,9 @@ playerDisplay = function () {
 	}
 
 	// Draws the automation indicators
-	for (i = 0; i < this.automationList.length; i++) {
-		var star1 = net.starList[this.automationList[i][0]];
-		var star2 = net.starList[this.automationList[i][1]];
+	for (i = 0; i < engine.automationList.length; i++) {
+		var star1 = engine.game[this.automationList[i][0]];
+		var star2 = engine.game[this.automationList[i][1]];
 		var dx = star2.x - star1.x;
 		var dy = star2.y - star1.y;
 		var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -80,7 +80,7 @@ playerDisplay = function () {
 	// Draws the selection cursor
 	for (var i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];
-		var star = net.starList[current[0]];
+		var star = engine.game[current[0]];
 		var inc = T * 0.01;
 		var r = star.radius + 5;
 

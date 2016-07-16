@@ -3,6 +3,8 @@ space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
 engine = new Engine();
 
+engine.addStar(0, 0, 10, 0, 1);
+
 // Connect events
 document.addEventListener("mousedown", downHandler, false);
 document.addEventListener("mouseup", upHandler, false);
@@ -23,7 +25,7 @@ function draw(timestamp) {
 	var dt = (timestamp - time) / 1000; // Seconds
 	time = timestamp;
 
-	playerstate.update();
+	//playerstate.update();
 	Display();
 
 	T += 1;

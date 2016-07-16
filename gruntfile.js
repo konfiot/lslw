@@ -8,10 +8,13 @@ module.exports = function (grunt) {
 			js: {
 				src: [
 					"client/js/global.js",
+					"common/engine.js",
+					"client/js/display.js",
 					"client/js/mouse.js",
 					"client/js/satellite.js",
 					"client/js/playerstate.js",
 					"client/js/playerdisplay.js",
+					"client/js/display.js",
 					"client/js/mapgen.js",
 					"client/js/utils.js",
 					"client/js/space.js",
