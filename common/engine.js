@@ -5,11 +5,11 @@ function Engine(io, callback, game_constants) {
 	this.io = io;
 	this.update = callback;
 	this.game = {
-		players = {},
-		stars = {},
-		links = {},
-		ships = {}
-	}
+		players: {},
+		stars: {},
+		links: {},
+		ships: {}
+	};
 	this.options = game_constants;
 }
 
@@ -39,7 +39,7 @@ Engine.prototype.get_satellite = function (player_id, satellite_id, callback) {
 	nearest = get_nearest_star(player_id, satellite_id);
 
 	if (nearest.dist <= this.oprions.dist) {
-		this.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res){
+		this.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res) {
 			if (res) {
 				this.game.ships[res.id] = res.data;
 				callback(true);
@@ -55,7 +55,7 @@ Engine.prototype.get_satellite = function (player_id, satellite_id, callback) {
 
 Engine.prototype.move = function (player_id, from_id, to_id, number, callback) {
 	if (possible_trip(from_id, to_id, number)) {
-		this.io.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res){
+		this.io.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res) {
 			if (res) {
 				this.game.ships[res.id] = res.data;
 				callback(true);
