@@ -2,11 +2,11 @@ language: node_js
 node_js:
 - '0.12'
 - '0.10'
-env: SOCKETIO_SERVER=https://gravitygame.herokuapp.com/ PIWIK_SERVER=https://piwik-konfiot.rhcloud.com/
+env: SERVER=https://lslw.herokuapp.com/
 deploy:
   provider: heroku
   api_key:
-    secure: XyOvdQIU1NSGzZ0g4mI5f8EKgDae4hPkIWsLpKlwsxlkM0iEAr/5eTaXQ/k0S7PhjNbD4iRLA1/RfOZo7aHE17KZ6QcCQOoFPkm+sqiAOa/FzEZu2X+M8TUx1XyyOtPvamL/lQJJWI3ApFGztTvkv7wPyFNdRXMjSAPn9AzJL1g=
+    secure: PYna+vGSzjbIjStS8jFZJo4gcZGzZpLf+OuKFZctPK6attCXuiBzvg4+zVnES4/36ZqtrQfnoj2Fm+gc1qu2LON+e0YbyAkJj5fdlndvwZV0FZY8LiFbKFSiQMiqhvZEucOelc2F28PvsLuJPiOpixrghzTIkQ+ae96OmLMkB++i+ASvkK6/vAv41kH/pdVFioxtpCEe/X+a3VtxnKAn5Xou+UOPfGHrwaDJuBwppfEUNiQBIxiTGuqbfwCrgjvTVyMByZUB2SRuN6ANZ/kaS3LjbulCjWCCxJ9EQKB8wl/nej/SBiN6EL2oie1mS+Qc8WbGSBLi/VsRRgJhsUJwGEpW9QHUtDVijxIXNDwbSs22t0XbyjD+5ZwjmJt99HjvvFjBoQlaFqpSvkDLV/z8TT3mFBQpsii9ePXu3QyBv89eErFvtpukFovY9yFmSvpIXFmDrykEq0mdDKoXo3r17hwavjh2KNDqxJgXkfixDJgvnYiBvfBshZmttX4gh9jUe0cOGaiCTHzGpJ425av/HvYVbAkm0w0/1pSQFGOoeMAZL30LXLgITgZHgxNJmnmd4XR+0voXp+UkTSBddULbhdnyTy8HLR7tUKRHOkRYv8dDqoTH//KOOR0xu1w411ym4mXwIevjR5DKve0VznLEIp6MZ1sny5JTepw3yWb7+rM=
   app: gravitygame
   on:
     repo: konfiot/gravity
@@ -15,4 +15,4 @@ deploy:
   skip_cleanup: true
 cache:
   directories:
-    - node_modules/
+  - node_modules/
