@@ -1,7 +1,7 @@
 net = new Network(3);
 d = new Dot(100, 100, 3);
 space = new SpaceBackground(100);
-player = new Player(1);
+playerstate = new PlayerState(1);
 mouse = new Mouse();
 // worldMousePosition();
 
@@ -25,15 +25,15 @@ function draw(timestamp) {
 	var dt = (timestamp - time) / 1000; // Seconds
 	time = timestamp;
 
-	var s = Math.min(player.scale, 1.0);
+	var s = Math.min(playerstate.scale, 1.0);
 	ctx.clearRect(0, 0, canvas.width / s, canvas.height / s);
 	ctx.save();
 	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.scale(player.scale, player.scale);
+	ctx.scale(playerstate.scale, playerstate.scale);
 
 	space.draw();
-	player.update();
-	player.draw();
+	playerstate.update();
+	playerDisplay();
 	d.draw();
 	d.isMouseOver();
 	net.update(dt);

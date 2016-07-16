@@ -1,12 +1,12 @@
 // Transltates the content to the viewer position
 function translate(x, y) {
-	ctx.translate(-player.centerX + x, -player.centerY + y);
+	ctx.translate(-playerstate.centerX + x, -playerstate.centerY + y);
 }
 
 // Compute the position of the mouse in world coordinates
 worldMousePosition = function () {
-	mouse.worldX = player.centerX + (mouse.x - canvas.width / 2) / player.scale;
-	mouse.worldY = player.centerY + (mouse.y - canvas.height / 2) / player.scale;
+	mouse.worldX = playerstate.centerX + (mouse.x - canvas.width / 2) / playerstate.scale;
+	mouse.worldY = playerstate.centerY + (mouse.y - canvas.height / 2) / playerstate.scale;
 };
 
 function generateColor(n) {
