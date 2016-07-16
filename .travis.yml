@@ -3,6 +3,8 @@ node_js:
 - '0.12'
 - '0.10'
 env: SERVER=https://lslw.herokuapp.com/
+sudo: required
+dist: trusty
 deploy:
   provider: heroku
   api_key:
