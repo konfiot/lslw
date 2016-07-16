@@ -26,12 +26,12 @@ Player.prototype.newSelection = function (starId) {
 	this.previousSelectedStar = this.selectedStar;
 	this.selectedStar = starId;
 
-	if (this.selectedStar >= 0) {
-		this.selectionAnimation.push([this.selectedStar, globalTimer, 0]);
-	}
-
 	if (this.selectionAnimation.length > 0) {
 		this.selectionAnimation[this.selectionAnimation.length - 1][1] = globalTimer;
+	}
+
+	if (this.selectedStar >= 0) {
+		this.selectionAnimation.push([this.selectedStar, globalTimer, 0]);
 	}
 };
 
@@ -76,10 +76,11 @@ Player.prototype.update = function () {
 			this.newSelection(this.hoveredStar);
 		}
 	}
+	
 
 	// If clicked out a star, deselect
 
-	if (this.hoveredStar < 0 && !mouse.isMouseDown) {
+	if (this.hoveredStar < 0 && mouse.isMouseDown) {
 		delta = Math.pow(mouse.lastClickedX - mouse.x, 2) + Math.pow(mouse.lastClickedY - mouse.y, 2);
 
 		if (delta < 2) {
