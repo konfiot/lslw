@@ -41,6 +41,39 @@ playerDisplay = function () {
 		ctx.restore();
 	}
 
+	// Draws the automation indicators
+	for (i = 0; i < this.automationList.length; i++) {
+		var star1 = net.starList[this.automationList[i][0]];
+		var star2 = net.starList[this.automationList[i][1]];
+		var dx = star2.x - star1.x;
+		var dy = star2.y - star1.y;
+		var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+		var theta = Math.acos(dx / L);
+
+		if (dy < 0) {
+			theta = -theta;
+		}
+
+		var c = Math.cos(theta);
+		var s = Math.sin(theta);
+		var h = star1.radius + 60;
+
+		ctx.save();
+
+		translate(star1.x, star1.y);
+		ctx.fillStyle = colorList[star1.id][0];
+
+		ctx.beginPath();
+		ctx.moveTo(-25 * s, 25 * c);
+		ctx.lineTo(h * c, h * s);
+		ctx.lineTo(25 * s, -25 * c);
+		ctx.lineTo(0, 0);
+		ctx.fill();
+
+		ctx.restore();
+	}
+
 	// Draws the selection cursor
 	for (var i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];

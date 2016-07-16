@@ -24,22 +24,13 @@ function draw(timestamp) {
 	var dt = (timestamp - time) / 1000; // Seconds
 	time = timestamp;
 
-	var s = Math.min(playerstate.scale, 1.0);
-	ctx.clearRect(0, 0, canvas.width / s, canvas.height / s);
-	ctx.save();
-	ctx.translate(canvas.width / 2, canvas.height / 2);
-	ctx.scale(playerstate.scale, playerstate.scale);
-
-	space.draw();
 	playerstate.update();
-	playerDisplay();
 	d.draw();
 	d.isMouseOver();
 	net.update(dt);
 	d.update(dt);
-	net.draw();
 
-	ctx.restore();
+	Display();
 
 	T += 1;
 	requestAnimationFrame(draw);
