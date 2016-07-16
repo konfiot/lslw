@@ -10,9 +10,9 @@ function Engine(io, callback, gameConstants) {
 		satellites: {},
 		links: {},
 		ships: {},
-		
+
 		nStars: 0,
-		nLinks: 0,
+		nLinks: 0
 	};
 	this.options = gameConstants;
 }

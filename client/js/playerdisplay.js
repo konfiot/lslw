@@ -77,13 +77,13 @@ playerDisplay = function () {
 	// Draws the selection cursor
 	for (var i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];
-		var s = net.starList[current[0]];
+		var star = net.starList[current[0]];
 		var inc = T * 0.01;
-		var r = s.radius + 5;
+		var r = star.radius + 5;
 
 		ctx.save();
 
-		translate(s.x, s.y);
+		translate(star.x, star.y);
 		ctx.strokeStyle = "rgba(255, 255, 255, " + String(0.6 * (1 - current[2] * current[2])) + ")";
 		ctx.lineWidth = 10 - current[2] * 5;
 		ctx.setLineDash([Math.PI / 3 * r, Math.PI / 6 * r]);

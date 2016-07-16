@@ -1,8 +1,7 @@
-net = new Network(3);
-d = new Dot(100, 100, 3);
+mouse = new Mouse();
 space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
-mouse = new Mouse();
+engine = new Engine();
 
 // Connect events
 document.addEventListener("mousedown", downHandler, false);
@@ -25,11 +24,6 @@ function draw(timestamp) {
 	time = timestamp;
 
 	playerstate.update();
-	d.draw();
-	d.isMouseOver();
-	net.update(dt);
-	d.update(dt);
-
 	Display();
 
 	T += 1;

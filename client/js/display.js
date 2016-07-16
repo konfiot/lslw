@@ -64,7 +64,7 @@ Display = function () {
 		ctx.restore();
 	}
 
-	// Draws the ships
+	// TODO Draws the ships
 	for (i = 0; i < engine.game.ships.length; i++) {
 		var connectionLength = engine.game.ships[i][4];
 		var k = engine.game.ships[i][3];
@@ -77,6 +77,48 @@ Display = function () {
 		drawShip(engine.game.ships[i][6], x, y, connectionAngle, engine.game.ships[i][2], 1, false);
 	}
 
+	// TODO chose ships ?
+	for (i = 0; i < engine.game.ships.length; i++) {
+		ctx.save();
+
+		translate(this.x, this.y);
+		ctx.fillStyle = whiteColor;
+		ctx.shadowColor = whiteColor;
+		ctx.strokeStyle = whiteSemiColor;
+		ctx.lineWidth = 4;
+
+		// Blur if hovered
+		if (!this.hover) {
+			ctx.shadowBlur = 5;
+		} else {
+			ctx.shadowBlur = 18;
+		}
+
+		ctx.beginPath();
+		ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+		ctx.fill();
+		ctx.stroke();
+
+		ctx.restore();
+
+		for (var i = 0; i < this.shipList.length; i++) {
+			var theta = this.shipList[i][6] - this.shipList[i][4] + Math.PI;
+			var e = Math.PI - this.shipList[i][6] - this.shipList[i][4];
+			var R = this.shipList[i][3];
+
+			var x = this.x + this.shipList[i][1] + R * Math.cos(e);
+			var y = this.y + this.shipList[i][2] + R * Math.sin(e);
+
+			var highlight = false;
+
+			if (this.shipList[i][4] < -Math.PI * 0.5) {
+				highlight = true;
+			}
+
+			drawShip(this.shipList[i][7], x, y, theta, 0, 0.5, highlight);
+		}
+	}
+
 	// Draws the stars
 
 	for (i = 0; i < this.nStars; i++) {
@@ -84,4 +126,4 @@ Display = function () {
 	}
 
 	ctx.restore();
-}
+};
