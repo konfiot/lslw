@@ -8,3 +8,5 @@ dist
 .c9
 *~
 *.swp
+dest
+src

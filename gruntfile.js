@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 				cwd: "client/html",
 				src: "*.html",
 				dest: "dist/"
-			},
+			}
 		},
 		csslint : {
 			options: {

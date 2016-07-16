@@ -5,8 +5,8 @@ var gameWindow = canvas.getBoundingClientRect();
 var canvasMarginLeft = gameWindow.left;
 var canvasMarginTop =  gameWindow.top;
 
-canvas.width = document.body.clientWidth; //document.width is obsolete
-canvas.height = document.body.clientHeight; //document.height is obsolete
+canvas.width = document.body.clientWidth; // document.width is obsolete
+canvas.height = document.body.clientHeight; // document.height is obsolete
 
 // Colors
 var whiteColor = "rgb(255, 255, 255)";
