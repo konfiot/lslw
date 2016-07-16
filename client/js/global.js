@@ -1,12 +1,28 @@
-// Context
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
-var gameWindow = canvas.getBoundingClientRect();
+<canvas id="backgroundLayer"></canvas>
+<canvas id="shipsLayer"></canvas>
+<canvas id="stellarLayer"></canvas>
+
+// Contexts
+var canvas = {
+	background : document.getElementById("backgroundLayer"),
+	ships : document.getElementById("shipsLayer"),
+	stellar : document.getElementById("stellarLayer")
+}
+
+var context = {
+	background : canvas.background.getContext("2d"),
+	ships : canvas.ships..getContext("2d"),
+	stellar : canvas.stellar..getContext("2d")
+}
+
+var gameWindow = canvas.background.getBoundingClientRect();
 var canvasMarginLeft = gameWindow.left;
 var canvasMarginTop =  gameWindow.top;
 
-canvas.width = document.body.clientWidth; // document.width is obsolete
-canvas.height = document.body.clientHeight; // document.height is obsolete
+for layer in canvas {
+	layer.width = document.body.clientWidth;
+	layer.height = document.body.clientHeight;
+}
 
 // Colors
 var whiteColor = "rgb(255, 255, 255)";

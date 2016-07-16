@@ -9,7 +9,7 @@ function Engine(io, callback, gameConstants) {
 }
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
-function getNearestStar(playerId, satelliteId) {
+Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	var x = this.game[satelliteId].x;
 	var y = this.game[satelliteId].y;
 
