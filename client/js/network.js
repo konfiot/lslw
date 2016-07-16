@@ -138,15 +138,15 @@ Network.prototype.draw = function() {
 	
 	// Draws the ships
 	for (i=0; i < this.shipList.length; i++) {
-		var L = this.shipList[i][4];
+		var connectionLength = this.shipList[i][4];
 		var k = this.shipList[i][3];
-		var theta = this.shipList[i][5];
+		var connectionAngle = this.shipList[i][5];
 		var id = this.starList[this.shipList[i][0]].id;
 		
-		var x = this.starList[this.shipList[i][0]].x + L * k * Math.cos(theta);
-		var y = this.starList[this.shipList[i][0]].y + L * k * Math.sin(theta);
+		var x = this.starList[this.shipList[i][0]].x + connectionLength * k * Math.cos(connectionAngle);
+		var y = this.starList[this.shipList[i][0]].y + connectionLength * k * Math.sin(connectionAngle);
 
-		drawShip(this.shipList[i][6],x,y,theta,this.shipList[i][2],1,false);
+		drawShip(this.shipList[i][6],x,y,connectionAngle,this.shipList[i][2],1,false);
 	}
 	
 	// Draws the stars

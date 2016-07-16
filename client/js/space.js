@@ -17,12 +17,13 @@ function SpaceBackground(n) {
 	this.createOutboundDistantStar = function() {
 		var distantFactor = Math.random() * 0.1 + 0.05;
 		var _x = Math.random() * 3;
+		var _y = 0;
 
 		// Create a star arroud the screen, not within, in a 3x3 box
 		if (_x < 1 || _x > 2) {
-			var _y = Math.random() * 3;
+			_y = Math.random() * 3;
 		} else {
-			var _y = Math.random();
+			_y = Math.random();
 			if (Math.random() < 0.5) {
 				_y += 2;
 			}
@@ -79,7 +80,7 @@ function SpaceBackground(n) {
 		ctx.restore();
 		
 		// Replace outboud stars with others
-		for (var i = 0; i < offScreenStars.length; i++)
-			this.distantStars[offScreenStars[i]] = this.createOutboundDistantStar();
+		for (var j = 0; j < offScreenStars.length; j++)
+			this.distantStars[offScreenStars[j]] = this.createOutboundDistantStar();
 	};
 }

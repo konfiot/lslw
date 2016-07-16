@@ -53,12 +53,12 @@ Player.prototype.update = function() {
 	
 	// Update which star is hovered
 	this.hoveredStar = -1;
-	for (var i=0; i < net.nStars; i++) {
-		var r2 = 	Math.pow(mouse.worldX - net.starList[i].x, 2) +
-					Math.pow(mouse.worldY - net.starList[i].y, 2);
-		if (r2 < Math.pow(net.starList[i].radius * 1.5 + 10 / player.scale, 2)) {
-			this.hoveredStar = i;
-			i = net.nStars; // Stop loop
+	for (var j = 0; j < net.nStars; j++) {
+		var radiusStar2 = 	Math.pow(mouse.worldX - net.starList[j].x, 2) +
+							Math.pow(mouse.worldY - net.starList[j].y, 2);
+		if (radiusStar2 < Math.pow(net.starList[j].radius * 1.5 + 10 / player.scale, 2)) {
+			this.hoveredStar = j;
+			j = net.nStars; // Stop loop
 		}
 	}
 	
@@ -83,8 +83,8 @@ Player.prototype.update = function() {
 	
 	// Is the mouse still dragging ?
 	if (!mouse.isMouseDown) {
-		if (	this.dragging && this.hoveredStar >= 0 && this.selectedStar >= 0
-				&& this.hoveredStar != this.selectedStar) {
+		if (	this.dragging && this.hoveredStar >= 0 &&
+				this.selectedStar >= 0 && this.hoveredStar != this.selectedStar) {
 			// TODO Test if possible
 			net.automationList.push([this.selectedStar, this.hoveredStar]);
 			this.newSelection(-1);
@@ -114,12 +114,12 @@ Player.prototype.update = function() {
 	// Update which satellite is hovered
 	// NEED OPTIMIZATION
 	this.hoveredSatellite = -1;
-	for (var i=0; i < net.nSatellites; i++) {
-		var r2 = 	Math.pow(mouse.worldX - net.satelliteList[i].x, 2) +
-					Math.pow(mouse.worldY - net.satelliteList[i].y, 2);
-		if (r2 < Math.pow(net.satelliteList[i].radius * 1.5 + 10 / player.scale, 2)) {
-			this.hoveredSatellite = i;
-			i = net.nSatellites; // Stop loop
+	for (var k = 0; k < net.nSatellites; k++) {
+		var radiusSat2 = 	Math.pow(mouse.worldX - net.satelliteList[k].x, 2) +
+							Math.pow(mouse.worldY - net.satelliteList[k].y, 2);
+		if (radiusSat2 < Math.pow(net.satelliteList[k].radius * 1.5 + 10 / player.scale, 2)) {
+			this.hoveredSatellite = k;
+			k = net.nSatellites; // Stop loop
 		}
 	}
 };
@@ -135,17 +135,17 @@ Player.prototype.mouseDownMoved = function(mouseDeltaX, mouseDeltaY) {
 Player.prototype.draw = function() {
 	// Draws an aura around the hovered star
 	if (this.hoveredStar >= 0) {
-		var s = net.starList[this.hoveredStar];
+		var hStar = net.starList[this.hoveredStar];
 		
 		ctx.save();
 		
-		translate(s.x, s.y);
+		translate(hStar.x, hStar.y);
 		ctx.lineWidth = 6;
-		ctx.shadowColor = colorList[s.id][1];
+		ctx.shadowColor = colorList[hStar.id][1];
 		ctx.shadowBlur = 12;
 		
 		ctx.beginPath();
-		ctx.arc(0, 0, s.radius, 0, Math.PI*2);
+		ctx.arc(0, 0, hStar.radius, 0, Math.PI*2);
 		ctx.fill();
 		ctx.stroke();
 		
@@ -154,18 +154,18 @@ Player.prototype.draw = function() {
 	
 	// Draws an aura around the hovered satellite
 	if (this.hoveredSatellite >= 0) {
-		var s = net.satelliteList[this.hoveredSatellite];
+		var hSat = net.satelliteList[this.hoveredSatellite];
 		
 		ctx.save();
 		
-		translate(s.x, s.y);
+		translate(hSat.x, hSat.y);
 		ctx.lineWidth = 6;
 		ctx.strokeStyle = whiteColor;
 		ctx.shadowColor = whiteColor;
 		ctx.shadowBlur = 12;
 		
 		ctx.beginPath();
-		ctx.arc(0, 0, s.radius, 0, Math.PI*2);
+		ctx.arc(0, 0, hSat.radius, 0, Math.PI*2);
 		ctx.fill();
 		ctx.stroke();
 		
@@ -184,28 +184,6 @@ Player.prototype.draw = function() {
 		translate(s.x, s.y);
 		ctx.strokeStyle = "rgba(255, 255, 255, " + String(0.6 * (1 - current[2] * current[2])) + ")";
 		ctx.lineWidth = 10 - current[2] * 5;
-		ctx.setLineDash([Math.PI / 3 * r, Math.PI / 6 * r]);
-		ctx.shadowColor = whiteSemiColor;
-		ctx.shadowBlur = 8;
-
-		ctx.beginPath();
-		ctx.arc(0, 0, r, inc, Math.PI * 2 + inc);
-		ctx.stroke();
-		ctx.closePath();
-		
-		ctx.restore();
-	}
-	
-	if (this.selectedStar >= 0) {
-		var s = net.starList[this.selectedStar];
-		var inc = T * 0.01;
-		var r = s.radius + 5;
-		
-		ctx.save();
-		
-		translate(s.x, s.y);
-		ctx.strokeStyle = whiteSemiColor;
-		ctx.lineWidth = 10;
 		ctx.setLineDash([Math.PI / 3 * r, Math.PI / 6 * r]);
 		ctx.shadowColor = whiteSemiColor;
 		ctx.shadowBlur = 8;

@@ -51,7 +51,7 @@ Star.prototype.draw = function() {
 	var r = this.radius - 9;
 	ctx.fillStyle = whiteTransparentColor;
 	ctx.arc(0, 0, r, Math.PI, 0);
-	ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3., 2 * Math.PI / 3.);
+	ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
 	ctx.fill();
 	ctx.closePath();
 	
