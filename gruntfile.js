@@ -20,7 +20,12 @@ module.exports = function (grunt) {
 					"client/js/inputs.js",
 					"client/js/game.js"
 				],
+
 				dest: "dist/dist.js"
+			},
+			css: {
+				src: ["client/css/main.css"],
+				dest: "dist/main.css"
 			}
 		},
 		uglify : {
@@ -40,13 +45,27 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		cssmin: {
+			main: {
+				src: "dist/main.css",
+				dest: "dist/main.css"
+			}
+		},
 		copy: {
 			html: {
 				expand: true,
 				cwd: "client/html",
 				src: "*.html",
 				dest: "dist/"
-			}
+			},
+		},
+		csslint : {
+			options: {
+				"ids": false,
+				"bulletproof-font-face": false,
+				"box-sizing": false
+			},
+			src: ["client/css/*.css"]
 		},
 		htmllint: {
 			all: ["client/html/*.html"]
@@ -60,10 +79,14 @@ module.exports = function (grunt) {
 		replace: {
 			dist: {
 				options: {
-					favicon: {
+					patterns: [{
+						match: "URL_SERVER",
+						replacement: process.env.SERVER || ""
+					},
+					{
 						match: "FAVICON_BASE64",
 						replacement: function () {return base64Img.base64Sync("dist/favicon.png");}
-					}
+					}]
 				},
 				files: [{
 					expand: true,
@@ -168,6 +191,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-htmlmin");
+	grunt.loadNpmTasks("grunt-contrib-cssmin");
+	grunt.loadNpmTasks("grunt-contrib-csslint");
 	grunt.loadNpmTasks("grunt-contrib-copy");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-clean");
@@ -184,11 +209,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-image-embed");
 	grunt.loadNpmTasks("grunt-remove-logging");
 
-	grunt.registerTask("default", ["concat", "removelogging", "imagemin", "uglify",
-					"htmlmin",  "replace", "imageEmbed", "inline", "compress", "clean"]);
+	grunt.registerTask("default", [	"concat", "removelogging", "imagemin", "uglify",
+					"htmlmin",  "replace", "cssmin", "imageEmbed", "inline", "compress", "clean"]);
 
-	grunt.registerTask("dev", ["hogan", "concat", "removelogging", "copy", "ttf2woff", "imagemin", "replace", "imageEmbed", "inline", "compress", "clean"]);
-	grunt.registerTask("test", ["jshint", "jscs:main", "htmllint", "default"]);
+	grunt.registerTask("dev", ["hogan", "concat", "removelogging", "copy", "imagemin", "replace", "imageEmbed", "inline", "compress", "clean"]);
+	grunt.registerTask("test", ["csslint", "jshint", "jscs:main", "htmllint", "default"]);
 	grunt.registerTask("server", ["concurrent:server"]);
 	grunt.registerTask("fix", ["jscs:fix"]);
 };
