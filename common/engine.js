@@ -70,3 +70,17 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 		callback(false);
 	}
 };
+
+Engine.prototype.addStar = function (x, y, count, id, playerId) {
+	if (this.game[id] !== undefined) {
+		return false;
+	}
+
+	this.game[id] = {
+		x: x,
+		y: y
+		count: count,
+		player = playerId
+	};
+	return true;
+};
