@@ -1,7 +1,7 @@
 /*
 The engine class, shared by the client and the server
 */
-function Engine(io, callback, game_constants) {
+function Engine(io, callback, gameConstants) {
 	this.io = io;
 	this.update = callback;
 	this.game = {
@@ -10,36 +10,31 @@ function Engine(io, callback, game_constants) {
 		links: {},
 		ships: {}
 	};
-	this.options = game_constants;
-}
-
-function distance(a, b) {
-	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
-}
-
-
-// TODO
-function get_nearest_star(player_id, satellite_id) {
+	this.options = gameConstants;
 }
 
 // TODO
-function possible_trip(from_id, to_id, number) {
+function getNearestStar(playerId, satelliteId) {
 }
 
-Engine.prototype.full_sync = function () {
-	this.game = io.get_game_data();
+// TODO
+function possibleTrip(fromId, toId, number) {
+}
+
+Engine.prototype.fullSync = function () {
+	this.game = io.getGameData();
 	this.update(this.game);
 };
 
-Engine.prototype.get_satellite = function (player_id, satellite_id, callback) {
-	if (stars[satellite_id].t !== "s") {
+Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
+	if (stars[satelliteId].t !== "s") {
 		callback(false);
 	}
 
-	nearest = get_nearest_star(player_id, satellite_id);
+	nearest = getNearestStar(playerId, satelliteId);
 
 	if (nearest.dist <= this.oprions.dist) {
-		this.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res) {
+		this.move(playerId, nearest.id, satelliteId, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				this.game.ships[res.id] = res.data;
 				callback(true);
@@ -53,9 +48,9 @@ Engine.prototype.get_satellite = function (player_id, satellite_id, callback) {
 	}
 };
 
-Engine.prototype.move = function (player_id, from_id, to_id, number, callback) {
-	if (possible_trip(from_id, to_id, number)) {
-		this.io.move(player_id, nearest.id, satellite_id, this.options.ships_per_satellite, function (res) {
+Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
+	if (possibleTrip(fromId, toId, number)) {
+		this.io.move(playerId, nearest.id, satelliteId, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				this.game.ships[res.id] = res.data;
 				callback(true);
@@ -68,4 +63,3 @@ Engine.prototype.move = function (player_id, from_id, to_id, number, callback) {
 		callback(false);
 	}
 };
-

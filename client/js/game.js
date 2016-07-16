@@ -3,7 +3,6 @@ d = new Dot(100, 100, 3);
 space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
 mouse = new Mouse();
-// worldMousePosition();
 
 // Connect events
 document.addEventListener("mousedown", downHandler, false);

@@ -1,7 +1,6 @@
 /*
 Here goes the map generator.
 */
-
 generateStars = function (size) {
 	starList = [];
 

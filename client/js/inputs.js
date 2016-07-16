@@ -1,4 +1,3 @@
-// Very WEIRD stuff
 function downHandler(e) {
 	mouse.downHandler(e);
 }
@@ -15,6 +14,7 @@ function moveHandler(e) {
 	mouse.moveHandler(e);
 }
 
+/* Not necessary yet
 function keyDownHandler(e) {
 	if (e.keyCode == 39) {
 		rightPressed = true;
@@ -33,3 +33,4 @@ function keyUpHandler(e) {
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+*/

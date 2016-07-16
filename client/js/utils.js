@@ -3,6 +3,10 @@ function translate(x, y) {
 	ctx.translate(-playerstate.centerX + x, -playerstate.centerY + y);
 }
 
+function distance(a, b) {
+	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+}
+
 // Compute the position of the mouse in world coordinates
 worldMousePosition = function () {
 	mouse.worldX = playerstate.centerX + (mouse.x - canvas.width / 2) / playerstate.scale;
