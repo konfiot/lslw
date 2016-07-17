@@ -36,7 +36,6 @@ function draw(timestamp) {
 	playerstate.update();
 	Display();
 
-	T += 1;
 	requestAnimationFrame(draw);
 }
 
