@@ -136,8 +136,8 @@ Display = function () {
 
 				ctx.save();
 
-				var s1 = engine.game[obj.startId];
-				var s2 = engine.game[obj.endId];
+				var s1 = engine.game[obj.from];
+				var s2 = engine.game[obj.to];
 
 				translate(s1.x, s1.y);
 				ctx.setLineDash([20, 8]);
