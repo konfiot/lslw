@@ -61,7 +61,11 @@ Engine.prototype.fullSync = function () {
 };
 
 Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
 	// Check if given id exists and is assigned to a satellite
+
 	if (this.game[satelliteId] !== undefined || this.game[satelliteId].type === "s") {
 		nearest = getNearestStar(playerId, satelliteId);
 
@@ -74,16 +78,21 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 };
 
 Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
+
 	if (possibleTrip(fromId, toId, number)) {
-		this.io.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, function (res) {
+		that = this;
+		this.io.move(playerId, fromId, toId, number, this.options.shipsPerSatellite, function (res) {
 			if (res) {
-				this.game[res.id] = {
+				that.game[res.id] = {
 					type: "ship",
 					id: playerId,
 					from: fromId,
 					to: toId,
 					count: number,
-					initRadius: computeStarRadius(this.game[fromId].count);
+					initRadius: computeStarRadius(this.game[fromId].count),
 					timestamp: res.ts
 				};
 				callback(true);
@@ -94,16 +103,21 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 	}
 };
 
-Engine.prototype.addStar = function (x, y, count, playerId) {
+Engine.prototype.addStar = function (x, y, count, playerId, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
+
 	if (count < 0) {
 		callback(false);
 
 		return;
 	}
 
+	that = this;
 	this.io.addStar(x, y, count, playerId, function (res) {
 		if (res) {
-			this.game[res.id] = {
+			that.game[res.id] = {
 				type: "star",
 				x: x,
 				y: y,
@@ -117,16 +131,21 @@ Engine.prototype.addStar = function (x, y, count, playerId) {
 	});
 };
 
-Engine.prototype.addSatellite = function (x, y, count) {
+Engine.prototype.addSatellite = function (x, y, count, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
+
 	if (count < 0) {
 		callback(false);
 
 		return;
 	}
 
-	this.io.addStar(x, y, count, function (res) {
+	that = this
+	this.io.addSatellite(x, y, count, function (res) {
 		if (res) {
-			this.game[res.id] = {
+			that.game[res.id] = {
 				type: "satellite",
 				x: x,
 				y: y,
@@ -139,16 +158,21 @@ Engine.prototype.addSatellite = function (x, y, count) {
 	});
 };
 
-Engine.prototype.addLink = function (from, to) {
+Engine.prototype.addLink = function (from, to, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
+
 	if (this.game[from] === undefined || this.game[to] === undefined || this.game[from].type !== "star" || this.game[to].type !== "star") {
 		callback(false);
 
 		return;
 	}
 
+	that = this
 	this.io.addLink(from, to, function (res) {
 		if (res) {
-			this.game[res.id] = {
+			that.game[res.id] = {
 				type: "link",
 				from: from,
 				to: to
@@ -160,10 +184,15 @@ Engine.prototype.addLink = function (from, to) {
 	});
 };
 
-Engine.prototype.addPlayer = function (name, color) {
+Engine.prototype.addPlayer = function (name, color, callback) {
+	if (typeof callback !== "function") {
+		callback = function(){};
+	}
+
+	that = this
 	this.io.addPlayer(name, color, function (res) {
 		if (res) {
-			this.game[res.id] = {
+			that.game[res.id] = {
 				type: "player",
 				name: name,
 				color: color

@@ -9,13 +9,27 @@ function makeid()
 
 	return text;
 }
-var handler = {
-	apply: function (target, thisArg, args) {
-		return {
-			id: makeid(),
-			time: Date.now()
-		};
-	}
+
+function DummyIo() {
+
+}
+
+DummyIo.prototype.move = function (playerId, fromId, toId, number, callback) {
+	callback({id: makeid(), ts: Date.now()});
 };
 
-var DummyIo = new Proxy({}, handler);
+DummyIo.prototype.addStar = function (x, y, count, playerId, callback) {
+	callback({id: makeid()});
+};
+
+DummyIo.prototype.addSatellite = function (x, y, count, callback) {
+	callback({id: makeid()});
+};
+
+DummyIo.prototype.addLink = function (from, to, callback) {
+	callback({id: makeid()});
+};
+
+DummyIo.prototype.addPlayer = function (name, color, callback) {
+	callback({id: makeid()});
+};
