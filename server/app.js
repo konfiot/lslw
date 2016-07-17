@@ -45,3 +45,11 @@ server.listen(parseInt(process.env.PORT || 1337, 10), function () {
 
 /* ---------------------------- Listening sockets ---------------------------- */
 
+var io = sio.listen(server);
+
+
+io.on('connection', function (socket){
+	socket.on('message', function () {});
+	socket.on('disconnect', function () {});
+});
+
