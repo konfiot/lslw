@@ -5,10 +5,6 @@ function Engine(io, gameConstants) {
 	this.io = io;
 	this.game = {};
 	this.options = gameConstants;
-	this.automationList = [];
-
-	colorList.push(["hsl(180, 0%, 51%)", "hsl(180, 0%, 67%)"],
-						generateColor(220), generateColor(100));
 }
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
@@ -195,7 +191,8 @@ Engine.prototype.addPlayer = function (name, color, callback) {
 			that.game[res.id] = {
 				type: "player",
 				name: name,
-				color: color
+				color: color,
+				automation: []
 			};
 			callback(res.id);
 		} else {

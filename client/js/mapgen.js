@@ -77,21 +77,28 @@ function generateMap(nStars) {
 		surroundingStar.splice(0, 1);
 	}
 
+	var currentStarId;
+
+	function callbackStar(starId) {
+		currentStarId = starId;
+	}
+
 	// Generate the actual map
 	for (var k = 0; k < createdStar.length; k++) {
 		var s = createdStar[k];
-		engine.addStar(s[0],
-						s[1],
-						parseInt(Math.random() * 10),
-						parseInt(Math.random() * 3), // To change
-						s[2]);
+		engine.addStar(s[0], // x
+						s[1], // y
+						parseInt(Math.random() * 10), // count
+						playerIdList[parseInt(Math.random() * 3)], // PlayerId
+						callbackStar);
+		createdStar[k] = currentStarId;
 	}
 
 	for (k = 0; k < createdLinks.length; k++) {
 		var l = createdLinks[k];
-		engine.addLink(l[0],
-						l[1],
-						nStars + 1 + k);
+
+		engine.addLink(createdStar[l[0]], // from
+						createdStar[l[1]]); // to
 	}
 }
 

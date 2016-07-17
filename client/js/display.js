@@ -1,5 +1,5 @@
 /*
-The main display. Calls every draw() functions
+The main display. Iterate through the game elements
 */
 Display = function () {
 	// Setup the scene
@@ -32,8 +32,8 @@ Display = function () {
 				ctx.save();
 
 				translate(obj.x, obj.y);
-				ctx.fillStyle = colorList[obj.id][0];
-				ctx.strokeStyle = colorList[obj.id][1];
+				ctx.fillStyle = engine.game[obj.id].color[0];
+				ctx.strokeStyle = engine.game[obj.id].color[1];
 				ctx.lineWidth = 6;
 				var radius = computeStarRadius(obj.count);
 
@@ -136,8 +136,8 @@ Display = function () {
 
 				ctx.save();
 
-				var s1 = engine.game[obj.startId];
-				var s2 = engine.game[obj.endId];
+				var s1 = engine.game[obj.from];
+				var s2 = engine.game[obj.to];
 
 				translate(s1.x, s1.y);
 				ctx.setLineDash([20, 8]);
@@ -145,7 +145,7 @@ Display = function () {
 				ctx.lineWidth = 3;
 
 				if (s1.id == s2.id) {
-					ctx.strokeStyle = colorList[s1.id][0];
+					ctx.strokeStyle = engine.game[s1.id].color[0];
 				} else {
 					ctx.strokeStyle = whiteColor;
 				}
@@ -161,54 +161,10 @@ Display = function () {
 		}
 	}
 
-	/*
-	// TODO chose ships ?
-	for (i = 0; i < engine.game.ships.length; i++) {
-		ctx.save();
-
-		translate(obj.x, obj.y);
-		ctx.fillStyle = whiteColor;
-		ctx.shadowColor = whiteColor;
-		ctx.strokeStyle = whiteSemiColor;
-		ctx.lineWidth = 4;
-
-		// Blur if hovered
-		if (!obj.hover) {
-			ctx.shadowBlur = 5;
-		} else {
-			ctx.shadowBlur = 18;
-		}
-
-		ctx.beginPath();
-		ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
-		ctx.fill();
-		ctx.stroke();
-
-		ctx.restore();
-
-		for (var i = 0; i < obj.shipList.length; i++) {
-			var theta = obj.shipList[i][6] - obj.shipList[i][4] + Math.PI;
-			var e = Math.PI - obj.shipList[i][6] - obj.shipList[i][4];
-			var R = obj.shipList[i][3];
-
-			var x = obj.x + obj.shipList[i][1] + R * Math.cos(e);
-			var y = obj.y + obj.shipList[i][2] + R * Math.sin(e);
-
-			var highlight = false;
-
-			if (obj.shipList[i][4] < -Math.PI * 0.5) {
-				highlight = true;
-			}
-
-			drawShip(obj.shipList[i][7], x, y, theta, 0, 0.5, highlight);
-		}
-	}
-	*/
 	for (layer in context) {
 		context[layer].restore();
 	}
 };
-
 
 // Draw ships, works for different size : ships between stars or to get points
 function drawShip(id, x, y, theta, count, factor, highlight) {
@@ -219,7 +175,7 @@ function drawShip(id, x, y, theta, count, factor, highlight) {
 
 	translate(x, y);
 	context.ships.scale(factor, factor);
-	context.ships.fillStyle = engine.colorList[id][0];
+	context.ships.fillStyle = engine.game[id].color[0];
 
 	if (highlight) {
 		context.ships.shadowColor = whiteSemiColor;

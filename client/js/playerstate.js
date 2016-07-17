@@ -30,7 +30,7 @@ PlayerState.prototype.newSelection = function (starId) {
 		this.selectionAnimation[this.selectionAnimation.length - 1][1] = globalTimer;
 	}
 
-	if (this.selectedStar >= 0) {
+	if (this.selectedStar !== -1) {
 		this.selectionAnimation.push([this.selectedStar, globalTimer, 0]);
 	}
 };
@@ -61,7 +61,7 @@ PlayerState.prototype.update = function () {
 			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
 							Math.pow(mouse.worldY - engine.game[j].y, 2);
 
-			if (radius2 < Math.pow(engine.game[j].radius * 1.5 + 10 / playerstate.scale, 2)) {
+			if (radius2 < Math.pow(computeStarRadius(engine.game[j].count) * 1.5 + 10 / playerstate.scale, 2)) {
 
 				if (engine.game[j].type == "star") {
 					this.hoveredStarId = j;
@@ -73,11 +73,11 @@ PlayerState.prototype.update = function () {
 	}
 
 	// Update which star is selected
-	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId >= 0) {
+	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId !== -1) {
 		this.previousClickedStar = this.clickedStar;
 		this.clickedStar = this.hoveredStarId;
 
-		if (engine.game[this.hoveredStarId].id == this.id) {
+		if (engine.game[this.hoveredStarId].id === this.id) {
 			this.newSelection(this.hoveredStarId);
 		}
 	}
@@ -95,29 +95,28 @@ PlayerState.prototype.update = function () {
 	// Is the mouse still dragging ?
 	if (!mouse.isMouseDown) {
 
-		if (this.dragging && this.hoveredStarId >= 0 &&
-			this.selectedStar >= 0 && this.hoveredStarId != this.selectedStar) {
+		if (this.dragging && this.hoveredStarId !== -1 &&
+			this.selectedStar !== -1 && this.hoveredStarId != this.selectedStar) {
 			// TODO REQUEST
-			engine.automationList.push([this.selectedStar, this.hoveredStarId]);
+			engine.game[this.id].automation.push([this.selectedStar, this.hoveredStarId]);
 			this.newSelection(-1);
 			this.clickedStar  = -1;
 		}
 		this.dragging = false;
 	} else {
-		if (this.hoveredStarId >= 0) {
+		if (this.hoveredStarId !== -1) {
 			this.dragging = true;
 		}
 	}
 
 	// If the playerstate whishes to, a ship is sent
-	if (this.clickedStar >= 0 && this.previousClickedStar >= 0 &&
+	if (this.clickedStar !== -1 && this.previousClickedStar !== -1 &&
 		this.previousClickedStar != this.clickedStar && engine.game[this.previousClickedStar].id == this.id) {
-		var p = engine.game[this.previousClickedStar].points;
+		var p = engine.game[this.previousClickedStar].count;
 
 		if (p > 0) {
 			// TODO REQUEST
 			// net.addNewShip(this.previousClickedStar, this.clickedStar, p);
-			// net.starList[this.previousClickedStar].setPoints(0);
 		}
 
 		this.newSelection(-1);

@@ -1,11 +1,18 @@
-mouse = new Mouse();
-space = new SpaceBackground(100);
-playerstate = new PlayerState(1);
-engine = new Engine(new DummyIo(), gameConstants);
+// Initializing
+var mouse = new Mouse();
+var space = new SpaceBackground(100);
+var engine = new Engine(new DummyIo(), gameConstants);
 
+function callbackPlayer(playerId) {
+	playerIdList.push(playerId);
+}
 
-// generateStars(5);
-// generateSatellites(100, 1500);
+// Add players
+engine.addPlayer("Gaia", ["hsl(180, 0%, 51%)", "hsl(180, 0%, 67%)"], callbackPlayer);
+engine.addPlayer("Player1", generateColor(220), callbackPlayer);
+engine.addPlayer("Player2", generateColor(100), callbackPlayer);
+
+var playerstate = new PlayerState(playerIdList[1]);
 
 generateMap(100);
 
@@ -32,7 +39,6 @@ function draw(timestamp) {
 	playerstate.update();
 	Display();
 
-	T += 1;
 	requestAnimationFrame(draw);
 }
 

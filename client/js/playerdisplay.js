@@ -6,18 +6,18 @@ playerDisplay = function () {
 	ctx = context.ships;
 
 	// Draws an aura around the hovered star
-	if (playerstate.hoveredStarId >= 0) {
+	if (playerstate.hoveredStarId !== -1) {
 		var hStar = engine.game[playerstate.hoveredStarId];
 
 		ctx.save();
 
 		translate(hStar.x, hStar.y);
 		ctx.lineWidth = 6;
-		ctx.shadowColor = colorList[hStar.id][1];
+		ctx.shadowColor = engine.game[hStar.id].color[1];
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, hStar.radius, 0, Math.PI * 2);
+		ctx.arc(0, 0, computeStarRadius(hStar.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -37,7 +37,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, hSat.radius, 0, Math.PI * 2);
+		ctx.arc(0, 0, computeStarRadius(hStat.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -45,9 +45,9 @@ playerDisplay = function () {
 	}
 
 	// Draws the automation indicators
-	for (i = 0; i < engine.automationList.length; i++) {
-		var star1 = engine.game[this.automationList[i][0]];
-		var star2 = engine.game[this.automationList[i][1]];
+	for (i = 0; i < engine.game[playerstate.id].automation.length; i++) {
+		var star1 = engine.game[engine.game[playerstate.id].automation[i][0]];
+		var star2 = engine.game[engine.game[playerstate.id].automation[i][1]];
 		var dx = star2.x - star1.x;
 		var dy = star2.y - star1.y;
 		var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -60,12 +60,12 @@ playerDisplay = function () {
 
 		var c = Math.cos(theta);
 		var s = Math.sin(theta);
-		var h = star1.radius + 60;
+		var h = computeStarRadius(star1.count) + 60;
 
 		ctx.save();
 
 		translate(star1.x, star1.y);
-		ctx.fillStyle = colorList[star1.id][0];
+		ctx.fillStyle = engine.game[star1.id].color[0];
 
 		ctx.beginPath();
 		ctx.moveTo(-25 * s, 25 * c);
@@ -81,8 +81,8 @@ playerDisplay = function () {
 	for (var i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];
 		var star = engine.game[current[0]];
-		var inc = T * 0.01;
-		var r = star.radius + 5;
+		var inc = 0.01; // TODO
+		var r = computeStarRadius(star.count) + 5;
 
 		ctx.save();
 
