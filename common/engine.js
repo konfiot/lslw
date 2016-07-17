@@ -53,7 +53,10 @@ Engine.prototype.possibleTrip = function (fromId, toId, number) {
 };
 
 Engine.prototype.fullSync = function () {
-	this.game = io.getGameData();
+	that = this;
+	io.getGameData(function (res) {
+		that.game = res
+	});
 };
 
 Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
