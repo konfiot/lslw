@@ -38,20 +38,23 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 Engine.prototype.possibleTrip = function (fromId, toId, number) {
 
 	if (this.game[toId] === undefined || this.game.fromId === undefined || this.game[fromId].count > number) {
+
 		return false;
 	}
 
 	if (this.game[toId].type === "satellite") {
-		return distance(this.game[fromId], this.game[toId]) <= this.options.range
+		return distance(this.game[fromId], this.game[toId]) <= this.options.range;
 	} else if (this.game[toId].type === "star") {
-		for (i in this.game) {
+		for (var i in this.game) {
 			if (this.game[i].type === "link" && this.game[i].from === fromId && this.game[i].to === toId) {
+
 				return true;
 			}
 		}
+
 		return false;
 	}
-}
+};
 
 Engine.prototype.fullSync = function () {
 	this.game = io.getGameData();
@@ -92,11 +95,12 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 Engine.prototype.addStar = function (x, y, count, playerId) {
 	if (count < 0) {
 		callback(false);
+
 		return;
 	}
 
-	this.io.addStar(x, y, count, playerId, function(res){
-		if(res) {
+	this.io.addStar(x, y, count, playerId, function (res) {
+		if (res) {
 			this.game[res.id] = {
 				type: "star",
 				x: x,
@@ -114,16 +118,17 @@ Engine.prototype.addStar = function (x, y, count, playerId) {
 Engine.prototype.addSatellite = function (x, y, count) {
 	if (count < 0) {
 		callback(false);
+
 		return;
 	}
 
-	this.io.addStar(x, y, count, function(res){
-		if(res) {
+	this.io.addStar(x, y, count, function (res) {
+		if (res) {
 			this.game[res.id] = {
 				type: "satellite",
 				x: x,
 				y: y,
-				count: count,
+				count: count
 			};
 			callback(true);
 		} else {
@@ -135,11 +140,12 @@ Engine.prototype.addSatellite = function (x, y, count) {
 Engine.prototype.addLink = function (from, to) {
 	if (this.game[from] === undefined || this.game[to] === undefined || this.game[from].type !== "star" || this.game[to].type !== "star") {
 		callback(false);
+
 		return;
 	}
 
-	this.io.addLink(from, to, function(res){
-		if(res) {
+	this.io.addLink(from, to, function (res) {
+		if (res) {
 			this.game[res.id] = {
 				type: "link",
 				from: from,
@@ -153,8 +159,8 @@ Engine.prototype.addLink = function (from, to) {
 };
 
 Engine.prototype.addPlayer = function (name, color) {
-	this.io.addPlayer(name, color, function(res){
-		if(res) {
+	this.io.addPlayer(name, color, function (res) {
+		if (res) {
 			this.game[res.id] = {
 				type: "player",
 				name: name,
