@@ -15,24 +15,25 @@ function Io () {
 
 	ws.onmessage = function (e) {
 		msg = JSON.parse(e.data);
+
 		switch (msg.type) {
-			case 'up':
+			case "up":
 				awaiting[msg.id](msg.game);
-			break;
+				break;
 
-			case 'ship': 
+			case "ship":
 				awaiting[msg.id]({id: msg.id, ts: msg.ts});
-			break;
+				break;
 
-			case 'player':
-				awaiting[msg.id]({id; msg.id});
-			break;
+			case "player":
+				awaiting[msg.id]({id: msg.id});
+				break;
 		}
-	}
+	};
 }
 
 Io.prototype.move = function (playerId, fromId, toId, number, callback) {
-	id = makeid():
+	id = makeid();
 	awaiting[id] = callback;
 	ws.send(JSON.stringify({
 		id: id,
@@ -56,7 +57,7 @@ Io.prototype.addLink = function (from, to, callback) {
 };
 
 Io.prototype.addPlayer = function (name, color, callback) {
-	id = makeid():
+	id = makeid();
 	awaiting[id] = callback;
 	ws.send(JSON.stringify({
 		id: id,
@@ -69,7 +70,7 @@ Io.prototype.addPlayer = function (name, color, callback) {
 Io.prototype.getGameData = function (callback) {
 	id = makeid();
 	awaiting[id] = callback;
-	ws.send(JSON.stringify({type: "up"}))
+	ws.send(JSON.stringify({type: "up"}));
 };
 
 

@@ -55,7 +55,7 @@ Engine.prototype.possibleTrip = function (fromId, toId, number) {
 Engine.prototype.fullSync = function () {
 	that = this;
 	io.getGameData(function (res) {
-		that.game = res
+		that.game = res;
 	});
 };
 

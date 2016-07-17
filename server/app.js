@@ -48,8 +48,8 @@ server.listen(parseInt(process.env.PORT || 1337, 10), function () {
 var io = sio.listen(server);
 
 
-io.on('connection', function (socket){
-	socket.on('message', function () {});
-	socket.on('disconnect', function () {});
+io.on("connection", function (socket) {
+	socket.on("message", function () {});
+	socket.on("disconnect", function () {});
 });
 
