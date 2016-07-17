@@ -85,17 +85,42 @@ Display = function () {
 
 			case "ship": // Draw a SHIP
 				obj = engine.game[i];
-				ctx = context.ships;
 
-				var connectionLength = engine.game.ships[i][4];
-				var k = engine.game.ships[i][3];
-				var connectionAngle = engine.game.ships[i][5];
-				var id = engine.game.stars[engine.game.ships[i][0]].id;
+				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 * engine.options.shipSpeed;
+				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
+				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
+				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-				var x = engine.game.stars[engine.game.ships[i][0]].x + connectionLength * k * Math.cos(connectionAngle);
-				var y = engine.game.stars[engine.game.ships[i][0]].y + connectionLength * k * Math.sin(connectionAngle);
+				var theta = Math.acos(dx / L);
 
-				drawShip(engine.game.ships[i][6], x, y, connectionAngle, engine.game.ships[i][2], 1, false);
+				if (dy < 0) {
+					theta = -theta;
+				}
+
+				var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+				var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+
+				drawShip(obj.id, x, y, theta, obj.count, 1, false);
+				break;
+				
+			case "cargo": // Draw a CARGO
+				obj = engine.game[i];
+
+				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 * engine.options.shipSpeed;
+				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
+				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
+				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+				var theta = Math.acos(dx / L);
+
+				if (dy < 0) {
+					theta = -theta;
+				}
+
+				var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+				var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+
+				drawShip(obj.id, x, y, theta, obj.count, 1, false);
 				break;
 
 			case "link": // Draw a LINK
@@ -176,3 +201,39 @@ Display = function () {
 		context[layer].restore();
 	}
 };
+
+
+// Draw ships, works for different size : ships between stars or to get points
+function drawShip(id, x, y, theta, count, factor, highlight) {
+	context.ships.save();
+
+	var c = Math.cos(theta);
+	var s = Math.sin(theta);
+
+	translate(x, y);
+	context.ships.scale(factor, factor);
+	context.ships.fillStyle = engine.colorList[id][0];
+
+	if (highlight) {
+		context.ships.shadowColor = whiteSemiColor;
+		context.ships.shadowBlur = 12;
+	}
+
+	// Draws the shape
+	context.ships.beginPath();
+	context.ships.moveTo(-15 * s, 15 * c);
+	context.ships.lineTo(35 * c, 35 * s);
+	context.ships.lineTo(15 * s, -15 * c);
+	context.ships.lineTo(-10 * c, -10 * s);
+	context.ships.fill();
+
+	if (val !== 0) {
+		context.ships.font = "lighter 25px arial";
+		context.ships.fillStyle = whiteSemiColor;
+		context.ships.textAlign = "center";
+		context.ships.textBaseline = "middle";
+		context.ships.fillText(count, 30 * s, -30 * c);
+	}
+
+	context.ships.restore();
+}

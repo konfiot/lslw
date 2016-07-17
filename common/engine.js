@@ -78,7 +78,8 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 		this.io.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				this.game[res.id] = {
-					type: "move",
+					type: "ship",
+					id: playerId,
 					from: fromId,
 					to: toId,
 					count: number,
@@ -173,3 +174,7 @@ Engine.prototype.addPlayer = function (name, color) {
 	});
 };
 
+Engine.prototype.serverTimestamp = function () {
+	// TODO
+	return svTimestamp;
+}

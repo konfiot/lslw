@@ -56,36 +56,4 @@ function computeLink(star1, x2, y2) {
 	return [x, y, theta, L];
 }
 
-// Draw ships, works for different size : ships between stars or to get points
-function drawShip(id, x, y, theta, val, factor, highlight) {
-	ctx.save();
 
-	var c = Math.cos(theta);
-	var s = Math.sin(theta);
-
-	translate(x, y);
-	ctx.scale(factor, factor);
-	ctx.fillStyle = colorList[id][0];
-
-	if (highlight) {
-		ctx.shadowColor = whiteSemiColor;
-		ctx.shadowBlur = 12;
-	}
-
-	ctx.beginPath();
-	ctx.moveTo(-15 * s, 15 * c);
-	ctx.lineTo(35 * c, 35 * s);
-	ctx.lineTo(15 * s, -15 * c);
-	ctx.lineTo(-10 * c, -10 * s);
-	ctx.fill();
-
-	if (val !== 0) {
-		ctx.font = "lighter 25px arial";
-		ctx.fillStyle = whiteSemiColor;
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(val, 30 * s, -30 * c);
-	}
-
-	ctx.restore();
-}

@@ -1,7 +1,7 @@
 mouse = new Mouse();
 space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
-engine = new Engine();
+engine = new Engine(DummyIo, gameConstants);
 
 //generateStars(5);
 //generateSatellites(100, 1500);

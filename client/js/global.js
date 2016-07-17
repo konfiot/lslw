@@ -11,6 +11,10 @@ var context = {
 	stellar : canvas.stellar.getContext("2d")
 };
 
+var gameConstants = {
+	shipSpeed : 70 // px/sec
+};
+
 var gameWindow = canvas.background.getBoundingClientRect();
 var canvasMarginLeft = gameWindow.left;
 var canvasMarginTop =  gameWindow.top;

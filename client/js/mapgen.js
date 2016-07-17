@@ -69,9 +69,6 @@ function generateMap(nStars) {
 					}
 				} else {
 					createdLinks.push([currentStar[2], -dir]);
-					
-					console.log(i, currentStar, "group then",Math.sqrt(Math.pow(createdStar[currentStar[2]][0] - createdStar[-dir][0], 2)
-						+ Math.pow(createdStar[currentStar[2]][1] - createdStar[-dir][1], 2)))
 				}
 			}
 		}
@@ -109,18 +106,14 @@ function checkDirAvailable(dir, radius, currentStar, createdStar) {
 		r2 = Math.pow(createdStar[i][0] - x, 2) + Math.pow(createdStar[i][1] - y, 2);
 		
 		if (r2 < minRadius) {
-			//console.log(r2, minRadius)
 			minStar = i;
 			minRadius = r2;
 		}
 	}
-	//console.log("R", Math.sqrt(minRadius))
 	
 	if (minStar < 0) {
 		return dir;
 	} else {
-		console.log("group",Math.sqrt(Math.pow(createdStar[currentStar[2]][0] - createdStar[minStar][0], 2)
-					+ Math.pow(createdStar[currentStar[2]][1] - createdStar[minStar][1], 2)))
 		return -minStar;
 	}	
 }
