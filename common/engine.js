@@ -82,7 +82,7 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 		callback = function () {};
 	}
 
-	if (possibleTrip(fromId, toId, number)) {
+	if (this.possibleTrip(fromId, toId, number)) {
 		that = this;
 		this.io.move(playerId, fromId, toId, number, this.options.shipsPerSatellite, function (res) {
 			if (res) {
