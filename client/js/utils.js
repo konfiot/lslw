@@ -3,6 +3,14 @@ function translate(x, y) {
 	ctx.translate(-playerstate.centerX + x, -playerstate.centerY + y);
 }
 
+function computeStarRadius(count) {
+	return 45 + Math.log(count + 1) * 5;
+}
+
+function computeSatelliteRadius(count) {
+	return 2 + 2 * count;
+}
+
 function distance(a, b) {
 	return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }

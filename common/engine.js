@@ -83,6 +83,7 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 					from: fromId,
 					to: toId,
 					count: number,
+					initRadius: computeStarRadius(this.game[fromId].count);
 					timestamp: res.ts
 				};
 				callback(true);

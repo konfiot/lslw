@@ -35,16 +35,17 @@ Display = function () {
 				ctx.fillStyle = colorList[obj.id][0];
 				ctx.strokeStyle = colorList[obj.id][1];
 				ctx.lineWidth = 6;
+				var radius = computeStarRadius(obj.count);
 
 				ctx.beginPath();
-				ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
+				ctx.arc(0, 0, radius, 0, Math.PI * 2);
 				ctx.fill();
 				ctx.stroke();
 				ctx.closePath();
 
 				// Reflection effect
 				ctx.fillStyle = whiteTransparentColor;
-				var r = obj.radius - 9;
+				var r = radius - 9;
 
 				ctx.beginPath();
 				ctx.arc(0, 0, r, Math.PI, 0);
@@ -53,7 +54,7 @@ Display = function () {
 				ctx.closePath();
 
 				// Write the score
-				ctx.font = "lighter " + String(parseInt(obj.radius)) + "px arial";
+				ctx.font = "lighter " + String(parseInt(radius)) + "px arial";
 				ctx.fillStyle = whiteSemiColor;
 				ctx.textAlign = "center";
 				ctx.textBaseline = "middle";
@@ -74,9 +75,10 @@ Display = function () {
 				ctx.shadowBlur = 5;
 				ctx.strokeStyle = whiteSemiColor;
 				ctx.lineWidth = 4;
+				var radius = computeSatelliteRadius(obj.count);
 
 				ctx.beginPath();
-				ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
+				ctx.arc(0, 0, radius, 0, Math.PI * 2);
 				ctx.fill();
 				ctx.stroke();
 
@@ -85,42 +87,46 @@ Display = function () {
 
 			case "ship": // Draw a SHIP
 				obj = engine.game[i];
-
-				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 * engine.options.shipSpeed;
-				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
-				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
-				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
-				var theta = Math.acos(dx / L);
-
-				if (dy < 0) {
-					theta = -theta;
-				}
-
-				var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
-				var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
-
-				drawShip(obj.id, x, y, theta, obj.count, 1, false);
-				break;
 				
-			case "cargo": // Draw a CARGO
-				obj = engine.game[i];
-
-				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 * engine.options.shipSpeed;
+				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
+										engine.options.shipSpeed + obj.initRadius;
 				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
 				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
 				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
+				
 				var theta = Math.acos(dx / L);
 
 				if (dy < 0) {
 					theta = -theta;
 				}
+				
+				if (obj.count > 0) {
+					// Draw a ship from star to star
+					var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+					var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
 
-				var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
-				var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+					drawShip(obj.id, x, y, theta, obj.count, 1, false);
+					
+				} else {
+					// Draw a ship seeking a satellite
+					var hasTakenSatellite = false;
+					
+					if (obj.count < 0) {
+						hasTakenSatellite = true;
+					}
+					
+					var alpha = crossedDistance / L * 2;
+					var gamma = Math.PI * 0.5 - theta - alpha;
+					var epsilon = theta + (Math.PI - alpha) * 0.5;
+					var r = L * Math.sin(alpha / 2);
 
-				drawShip(obj.id, x, y, theta, obj.count, 1, false);
+					var x = engine.game[obj.from].x + r * Math.cos(epsilon);
+					var y = engine.game[obj.from].y + r * Math.sin(epsilon);
+					
+					drawShip(obj.id, x, y, gamma, obj.count, 0.5, hasTakenSatellite);
+				}
+				
+				
 				break;
 
 			case "link": // Draw a LINK
