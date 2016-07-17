@@ -51,7 +51,7 @@ PlayerState.prototype.update = function () {
 			}
 		}
 	}
-
+	
 	// Update which star or which satellite is hovered
 	this.hoveredStarId = -1;
 	this.hoveredSatelliteId = -1;
@@ -60,8 +60,8 @@ PlayerState.prototype.update = function () {
 		if (engine.game[j].type == "star" || engine.game[j].type == "satellite") {
 			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
 							Math.pow(mouse.worldY - engine.game[j].y, 2);
-
-			if (radius2 < Math.pow(engine.game[j].radius * 1.5 + 10 / playerstate.scale, 2)) {
+			
+			if (radius2 < Math.pow(computeStarRadius(engine.game[j].count) * 1.5 + 10 / playerstate.scale, 2)) {
 
 				if (engine.game[j].type == "star") {
 					this.hoveredStarId = j;
@@ -71,7 +71,7 @@ PlayerState.prototype.update = function () {
 			}
 		}
 	}
-
+	console.log("state", this.hoveredStarId);
 	// Update which star is selected
 	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId >= 0) {
 		this.previousClickedStar = this.clickedStar;
@@ -112,7 +112,7 @@ PlayerState.prototype.update = function () {
 	// If the playerstate whishes to, a ship is sent
 	if (this.clickedStar >= 0 && this.previousClickedStar >= 0 &&
 		this.previousClickedStar != this.clickedStar && engine.game[this.previousClickedStar].id == this.id) {
-		var p = engine.game[this.previousClickedStar].points;
+		var p = engine.game[this.previousClickedStar].count;
 
 		if (p > 0) {
 			// TODO REQUEST

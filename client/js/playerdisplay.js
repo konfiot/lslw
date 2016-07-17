@@ -6,18 +6,18 @@ playerDisplay = function () {
 	ctx = context.ships;
 
 	// Draws an aura around the hovered star
-	if (playerstate.hoveredStarId >= 0) {
+	if (playerstate.hoveredStarId !== -1) {
 		var hStar = engine.game[playerstate.hoveredStarId];
-
+		console.log(hStar);
 		ctx.save();
 
 		translate(hStar.x, hStar.y);
 		ctx.lineWidth = 6;
-		ctx.shadowColor = colorList[hStar.id][1];
+		ctx.shadowColor = engine.colorList[hStar.id][1];
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, hStar.radius, 0, Math.PI * 2);
+		ctx.arc(0, 0, computeStarRadius(hStar.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -37,7 +37,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, hSat.radius, 0, Math.PI * 2);
+		ctx.arc(0, 0, computeStarRadius(hStar.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -60,12 +60,12 @@ playerDisplay = function () {
 
 		var c = Math.cos(theta);
 		var s = Math.sin(theta);
-		var h = star1.radius + 60;
+		var h = computeStarRadius(star1.count) + 60;
 
 		ctx.save();
 
 		translate(star1.x, star1.y);
-		ctx.fillStyle = colorList[star1.id][0];
+		ctx.fillStyle = engine.colorList[star1.id][0];
 
 		ctx.beginPath();
 		ctx.moveTo(-25 * s, 25 * c);
@@ -82,7 +82,7 @@ playerDisplay = function () {
 		var current = playerstate.selectionAnimation[i];
 		var star = engine.game[current[0]];
 		var inc = T * 0.01;
-		var r = star.radius + 5;
+		var r = computeStarRadius(star.count) + 5;
 
 		ctx.save();
 
