@@ -3,8 +3,10 @@ space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
 engine = new Engine();
 
-generateStars(5);
-generateSatellites(100, 1500);
+//generateStars(5);
+//generateSatellites(100, 1500);
+
+generateMap(100);
 
 // Connect events
 document.addEventListener("mousedown", downHandler, false);

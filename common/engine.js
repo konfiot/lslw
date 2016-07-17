@@ -102,3 +102,17 @@ Engine.prototype.addSatellite = function (x, y, count, id) {
 
 	return true;
 };
+
+Engine.prototype.addLink = function (star1Id, star2Id, id) {
+	if (this.game[id] !== undefined) {
+		return false;
+	}
+
+	this.game[id] = {
+		type: "link",
+		startId: star1Id,
+		endId: star2Id,
+	};
+
+	return true;
+};

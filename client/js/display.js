@@ -106,12 +106,12 @@ Display = function () {
 
 				var s1 = engine.game[obj.startId];
 				var s2 = engine.game[obj.endId];
-
+				
 				translate(s1.x, s1.y);
 				ctx.setLineDash([20, 8]);
 
 				ctx.lineWidth = 3;
-
+				
 				if (s1.id == s2.id) {
 					ctx.strokeStyle = colorList[s1.id][0];
 				} else {
