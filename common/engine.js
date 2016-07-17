@@ -17,7 +17,7 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	var y = this.game[satelliteId].y;
 
 	closestStar = -1;
-	closestDist = Math.pow(this.options.dist + 1, 2);
+	closestDist = Math.pow(this.options.range + 1, 2);
 
 	for (var i in this.game) {
 		// Only look at player's stars
@@ -25,7 +25,7 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 			r2 = Math.pow(x - this.game.stars[i].x, 2) +
 					Math.pow(y - this.game[i].y, 2);
 
-			if (r2 < closestDist && r2 < this.options.dist) {
+			if (r2 < closestDist && r2 < this.options.range) {
 				closestDist = r2;
 				closestStar = i;
 			}
@@ -35,8 +35,22 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	return closestStar;
 };
 
-// TODO
-function possibleTrip(fromId, toId, number) {
+Engine.prototype.possibleTrip = function (fromId, toId, number) {
+
+	if (this.game[toId] === undefined || this.game.fromId === undefined || this.game[fromId].count > number) {
+		return false;
+	}
+
+	if (this.game[toId].type === "satellite") {
+		return distance(this.game[fromId], this.game[toId]) <= this.options.range
+	} else if (this.game[toId].type === "star") {
+		for (i in this.game) {
+			if (this.game[i].type === "link" && this.game[i].from === fromId && this.game[i].to === toId) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 Engine.prototype.fullSync = function () {
@@ -60,45 +74,96 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 	if (possibleTrip(fromId, toId, number)) {
 		this.io.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, function (res) {
 			if (res) {
-				this.game[res.id] = res.data;
+				this.game[res.id] = {
+					type: "move",
+					from: fromId,
+					to: toId,
+					count: number,
+					timestamp: res.ts
+				};
+				callback(true);
+			} else {
+				callback(false);
 			}
 		});
 	}
 };
 
-Engine.prototype.addStar = function (x, y, count, playerId, id) {
-	if (this.game[id] !== undefined || count < 0) {
-		return false;
+Engine.prototype.addStar = function (x, y, count, playerId) {
+	if (count < 0) {
+		callback(false);
+		return;
 	}
 
-	var radius = 45 + Math.log(count + 1) * 5;
-
-	this.game[id] = {
-		type: "star",
-		x: x,
-		y: y,
-		count: count,
-		id: playerId,
-		radius: radius
-	};
-
-	return true;
+	this.io.addStar(x, y, count, playerId, function(res){
+		if(res) {
+			this.game[res.id] = {
+				type: "star",
+				x: x,
+				y: y,
+				count: count,
+				id: playerId
+			};
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
 };
 
-Engine.prototype.addSatellite = function (x, y, count, id) {
-	if (this.game[id] !== undefined || count < 0) {
-		return false;
+Engine.prototype.addSatellite = function (x, y, count) {
+	if (count < 0) {
+		callback(false);
+		return;
 	}
 
-	var radius = 2 + 2 * count;
-
-	this.game[id] = {
-		type: "satellite",
-		x: x,
-		y: y,
-		count: count,
-		radius: radius
-	};
-
-	return true;
+	this.io.addStar(x, y, count, function(res){
+		if(res) {
+			this.game[res.id] = {
+				type: "satellite",
+				x: x,
+				y: y,
+				count: count,
+			};
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
 };
+
+Engine.prototype.addLink = function (from, to) {
+	if (this.game[from] === undefined || this.game[to] === undefined || this.game[from].type !== "star" || this.game[to].type !== "star") {
+		callback(false);
+		return;
+	}
+
+	this.io.addLink(from, to, function(res){
+		if(res) {
+			this.game[res.id] = {
+				type: "link",
+				from: from,
+				to: to
+			};
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
+};
+
+Engine.prototype.addPlayer = function (name, color) {
+	this.io.addPlayer(name, color, function(res){
+		if(res) {
+			this.game[res.id] = {
+				type: "player",
+				name: name,
+				color: color
+			};
+			callback(true);
+		} else {
+			callback(false);
+		}
+	});
+};
+
