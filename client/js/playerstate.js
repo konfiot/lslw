@@ -114,7 +114,7 @@ PlayerState.prototype.update = function () {
 		var p = engine.game[this.previousClickedStar].count;
 
 		if (p > 0) {
-			engine.move(this.id, this.previousClickedStar, this.clickedStar, p)
+			engine.move(this.id, this.previousClickedStar, this.clickedStar, p);
 		}
 
 		this.newSelection(-1);

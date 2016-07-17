@@ -87,7 +87,7 @@ Display = function () {
 
 			case "ship": // Draw a SHIP
 				obj = engine.game[i];
-
+				console.log(obj);
 				var x, y;
 				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
 										engine.options.shipSpeed + obj.initRadius;

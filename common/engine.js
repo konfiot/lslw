@@ -7,6 +7,11 @@ function Engine(io, gameConstants) {
 	this.options = gameConstants;
 }
 
+// Synchronize the engine
+Engine.prototype.fullSync = function () {
+	this.game = io.getGameData();
+};
+
 // Returns the id of the closest star from a given satellite. -1 if out of reach
 Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	var x = this.game[satelliteId].x;
@@ -31,9 +36,9 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	return closestStar;
 };
 
-Engine.prototype.possibleTrip = function (fromId, toId, number) {
-
-	if (this.game[toId] === undefined || this.game.fromId === undefined || this.game[fromId].count > number) {
+// Return a boolean to tell wether or not a certain path is allowed to be taken
+Engine.prototype.possibleTrip = function (fromId, toId) {
+	if (this.game[toId] === undefined || this.game[fromId] === undefined) {
 
 		return false;
 	}
@@ -41,8 +46,11 @@ Engine.prototype.possibleTrip = function (fromId, toId, number) {
 	if (this.game[toId].type === "satellite") {
 		return distance(this.game[fromId], this.game[toId]) <= this.options.range;
 	} else if (this.game[toId].type === "star") {
+
 		for (var i in this.game) {
-			if (this.game[i].type === "link" && this.game[i].from === fromId && this.game[i].to === toId) {
+			if (this.game[i].type === "link" &&
+				((this.game[i].from === fromId && this.game[i].to === toId) ||
+				(this.game[i].from === toId && this.game[i].to === fromId))) {
 
 				return true;
 			}
@@ -52,16 +60,13 @@ Engine.prototype.possibleTrip = function (fromId, toId, number) {
 	}
 };
 
-Engine.prototype.fullSync = function () {
-	this.game = io.getGameData();
-};
-
+// Send a ship to harvest a satellite
 Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
 	}
-	// Check if given id exists and is assigned to a satellite
 
+	// Check if given id exists and is assigned to a satellite
 	if (this.game[satelliteId] !== undefined || this.game[satelliteId].type === "s") {
 		nearest = getNearestStar(playerId, satelliteId);
 
@@ -73,13 +78,14 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 	}
 };
 
-Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
+// Send a ship from one star to another
+Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
 	}
 
-	if (this.possibleTrip(fromId, toId, number)) {
-		that = this;
+	if (this.possibleTrip(fromId, toId)) {
+		that = this; // ??
 		this.io.move(playerId, fromId, toId, count, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				that.game[res.id] = {
@@ -99,6 +105,7 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 	}
 };
 
+// Adds a star to the game
 Engine.prototype.addStar = function (x, y, count, playerId, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
@@ -127,6 +134,7 @@ Engine.prototype.addStar = function (x, y, count, playerId, callback) {
 	});
 };
 
+// Adds a satellite to the game
 Engine.prototype.addSatellite = function (x, y, count, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
@@ -154,6 +162,7 @@ Engine.prototype.addSatellite = function (x, y, count, callback) {
 	});
 };
 
+// Adds a connexion between two stars
 Engine.prototype.addLink = function (from, to, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
@@ -180,6 +189,7 @@ Engine.prototype.addLink = function (from, to, callback) {
 	});
 };
 
+// Adds a player to the game
 Engine.prototype.addPlayer = function (name, color, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
@@ -201,6 +211,7 @@ Engine.prototype.addPlayer = function (name, color, callback) {
 	});
 };
 
+// Returns the timestamp of the server
 Engine.prototype.serverTimestamp = function () {
 	// TODO
 	return svTimestamp;
