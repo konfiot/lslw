@@ -97,7 +97,6 @@ PlayerState.prototype.update = function () {
 
 		if (this.dragging && this.hoveredStarId !== -1 &&
 			this.selectedStar !== -1 && this.hoveredStarId != this.selectedStar) {
-			// TODO REQUEST
 			engine.game[this.id].automation.push([this.selectedStar, this.hoveredStarId]);
 			this.newSelection(-1);
 			this.clickedStar  = -1;
@@ -115,8 +114,7 @@ PlayerState.prototype.update = function () {
 		var p = engine.game[this.previousClickedStar].count;
 
 		if (p > 0) {
-			// TODO REQUEST
-			// net.addNewShip(this.previousClickedStar, this.clickedStar, p);
+			engine.move(this.id, this.previousClickedStar, this.clickedStar, p)
 		}
 
 		this.newSelection(-1);

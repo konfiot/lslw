@@ -83,14 +83,14 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 
 	if (this.possibleTrip(fromId, toId, number)) {
 		that = this;
-		this.io.move(playerId, fromId, toId, number, this.options.shipsPerSatellite, function (res) {
+		this.io.move(playerId, fromId, toId, count, this.options.shipsPerSatellite, function (res) {
 			if (res) {
 				that.game[res.id] = {
 					type: "ship",
 					id: playerId,
 					from: fromId,
 					to: toId,
-					count: number,
+					count: count,
 					initRadius: computeStarRadius(this.game[fromId].count),
 					timestamp: res.ts
 				};
