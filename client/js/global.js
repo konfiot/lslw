@@ -13,7 +13,8 @@ var context = {
 
 var gameConstants = {
 	shipSpeed : 70, // px/sec
-	range : 100
+	range : 200,
+	satMinDist : 100
 };
 
 var gameWindow = canvas.background.getBoundingClientRect();

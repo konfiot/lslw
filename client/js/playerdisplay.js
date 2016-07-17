@@ -11,7 +11,7 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(hStar.x, hStar.y);
+		translate(hStar.x, hStar.y, ctx);
 		ctx.lineWidth = 6;
 		ctx.shadowColor = engine.game[hStar.id].color[1];
 		ctx.shadowBlur = 12;
@@ -30,7 +30,7 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(hSat.x, hSat.y);
+		translate(hSat.x, hSat.y, ctx);
 		ctx.lineWidth = 6;
 		ctx.strokeStyle = whiteColor;
 		ctx.shadowColor = whiteColor;
@@ -64,7 +64,7 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(star1.x, star1.y);
+		translate(star1.x, star1.y, ctx);
 		ctx.fillStyle = engine.game[star1.id].color[0];
 
 		ctx.beginPath();
@@ -86,7 +86,7 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(star.x, star.y);
+		translate(star.x, star.y, ctx);
 		ctx.strokeStyle = "rgba(255, 255, 255, " + String(0.6 * (1 - current[2] * current[2])) + ")";
 		ctx.lineWidth = 10 - current[2] * 5;
 		ctx.setLineDash([Math.PI / 3 * r, Math.PI / 6 * r]);

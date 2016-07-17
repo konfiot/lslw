@@ -13,7 +13,7 @@ function DummyIo () {
 
 }
 
-DummyIo.prototype.move = function (playerId, fromId, toId, number, callback) {
+DummyIo.prototype.move = function (playerId, fromId, toId, count, callback) {
 	callback({id: makeid(), ts: Date.now()});
 };
 

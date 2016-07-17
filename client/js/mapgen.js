@@ -1,34 +1,7 @@
 /*
 Here goes the map generator.
 */
-generateStars = function (size) {
-	var k = 0;
-
-	for (var i = -size + 1; i < size; i++) {
-		for (var j = -size + 1; j < size; j++) {
-			engine.addStar(parseInt(350 * (i + Math.random() * 0.5 - 0.25)),
-							parseInt(350 * (j + Math.random() * 0.5 - 0.25)),
-							parseInt(Math.random() * 10),
-							parseInt(Math.random() * 3),
-							k);
-			k++;
-		}
-	}
-};
-
-generateSatellites = function (nSat, size) {
-	var k = 100;
-
-	for (var i = 0; i < nSat; i++) {
-		engine.addSatellite(parseInt((Math.random() * 2 - 1) * size),
-							parseInt((Math.random() * 2 - 1) * size),
-							parseInt(Math.random() * 3 + 2),
-							k);
-		k++;
-	}
-};
-
-function generateMap(nStars) {
+generateMap = function (nStars) {
 	var avgRadius = 250;
 	var surroundingStar = [[0, 0, 0, []]]; // x, y, id, links angles
 	var createdStar = [[0, 0, 0]];
@@ -100,10 +73,10 @@ function generateMap(nStars) {
 		engine.addLink(createdStar[l[0]], // from
 						createdStar[l[1]]); // to
 	}
-}
+};
 
 // Returns the direction if not near a star. If close to another star, returns its id
-function checkDirAvailable(dir, radius, currentStar, createdStar) {
+checkDirAvailable = function (dir, radius, currentStar, createdStar) {
 	var x = currentStar[0] + radius * Math.cos(dir);
 	var y = currentStar[1] + radius * Math.sin(dir);
 
@@ -124,9 +97,9 @@ function checkDirAvailable(dir, radius, currentStar, createdStar) {
 	} else {
 		return -minStar;
 	}
-}
+};
 
-function numberOfLinks() {
+numberOfLinks = function () {
 	var r = Math.random();
 	var N = 3;
 
@@ -137,10 +110,10 @@ function numberOfLinks() {
 	}
 
 	return N;
-}
+};
 
 // Choose another direction far enough from previous ones
-function chooseDirection(dirs) {
+chooseDirection = function (dirs) {
 	var D = 30;
 	var r = Math.random() * 2 * Math.PI / D;
 	var possibleDirs = [];
@@ -169,4 +142,40 @@ function chooseDirection(dirs) {
 	} else {
 		return -1;
 	}
-}
+};
+
+generateSatellites = function (nSat, size) {
+	var createdSatellites = []; // x, y, count
+
+	for (var i = 0; i < nSat; i++) {
+		var x = parseInt(size * (Math.random() * 2 - 1));
+		var y = parseInt(size * (Math.random() * 2 - 1));
+		var count = 2 + parseInt(Math.random() * 3);
+
+		for (var s in engine.game) {
+
+			// Iteration over stars to find if the future satellite is not too close
+			if (engine.game[s].type === "star") {
+				var dx = x - engine.game[s].x;
+				var dy = y - engine.game[s].y;
+				var r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+				if (r < engine.options.satMinDist) {
+					var f = engine.options.satMinDist / r;
+
+					// Update coordinates
+					x = engine.game[s].x + f * dx;
+					y = engine.game[s].y + f * dy;
+				}
+			}
+		}
+
+		createdSatellites.push([x, y, count]);
+	}
+
+	for (var j = 0; j < createdSatellites.length; j++) {
+		engine.addSatellite(createdSatellites[j][0],
+							createdSatellites[j][1],
+							createdSatellites[j][2]);
+	}
+};

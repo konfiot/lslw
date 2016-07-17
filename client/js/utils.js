@@ -1,5 +1,5 @@
 // Transltates the content to the viewer position
-function translate(x, y) {
+function translate(x, y, ctx) {
 	ctx.translate(-playerstate.centerX + x, -playerstate.centerY + y);
 }
 

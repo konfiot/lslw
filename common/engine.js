@@ -48,6 +48,8 @@ Engine.prototype.possibleTrip = function (fromId, toId) {
 	} else if (this.game[toId].type === "star") {
 
 		for (var i in this.game) {
+
+			// Test for both sides
 			if (this.game[i].type === "link" &&
 				((this.game[i].from === fromId && this.game[i].to === toId) ||
 				(this.game[i].from === toId && this.game[i].to === fromId))) {
@@ -86,7 +88,9 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 
 	if (this.possibleTrip(fromId, toId)) {
 		that = this; // ??
-		this.io.move(playerId, fromId, toId, count, this.options.shipsPerSatellite, function (res) {
+		var radius = computeStarRadius(this.game[fromId].count);
+
+		this.io.move(playerId, fromId, toId, count, function (res) {
 			if (res) {
 				that.game[res.id] = {
 					type: "ship",
@@ -94,7 +98,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 					from: fromId,
 					to: toId,
 					count: count,
-					initRadius: computeStarRadius(this.game[fromId].count),
+					initRadius: radius,
 					timestamp: res.ts
 				};
 				callback(res.id);
@@ -214,6 +218,8 @@ Engine.prototype.addPlayer = function (name, color, callback) {
 // Returns the timestamp of the server
 Engine.prototype.serverTimestamp = function () {
 	// TODO
+	svTimestamp = Date.now();
+
 	return svTimestamp;
 };
 
