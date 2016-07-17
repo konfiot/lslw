@@ -59,7 +59,7 @@ Engine.prototype.fullSync = function () {
 
 Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 	// Check if given id exists and is assigned to a satellite
 
@@ -76,7 +76,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 
 Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 
 	if (possibleTrip(fromId, toId, number)) {
@@ -102,7 +102,7 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 
 Engine.prototype.addStar = function (x, y, count, playerId, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 
 	if (count < 0) {
@@ -130,7 +130,7 @@ Engine.prototype.addStar = function (x, y, count, playerId, callback) {
 
 Engine.prototype.addSatellite = function (x, y, count, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 
 	if (count < 0) {
@@ -139,7 +139,7 @@ Engine.prototype.addSatellite = function (x, y, count, callback) {
 		return;
 	}
 
-	that = this
+	that = this;
 	this.io.addSatellite(x, y, count, function (res) {
 		if (res) {
 			that.game[res.id] = {
@@ -157,7 +157,7 @@ Engine.prototype.addSatellite = function (x, y, count, callback) {
 
 Engine.prototype.addLink = function (from, to, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 
 	if (this.game[from] === undefined || this.game[to] === undefined || this.game[from].type !== "star" || this.game[to].type !== "star") {
@@ -166,7 +166,7 @@ Engine.prototype.addLink = function (from, to, callback) {
 		return;
 	}
 
-	that = this
+	that = this;
 	this.io.addLink(from, to, function (res) {
 		if (res) {
 			that.game[res.id] = {
@@ -183,10 +183,10 @@ Engine.prototype.addLink = function (from, to, callback) {
 
 Engine.prototype.addPlayer = function (name, color, callback) {
 	if (typeof callback !== "function") {
-		callback = function(){};
+		callback = function () {};
 	}
 
-	that = this
+	that = this;
 	this.io.addPlayer(name, color, function (res) {
 		if (res) {
 			that.game[res.id] = {
@@ -204,4 +204,5 @@ Engine.prototype.addPlayer = function (name, color, callback) {
 Engine.prototype.serverTimestamp = function () {
 	// TODO
 	return svTimestamp;
-}
+};
+

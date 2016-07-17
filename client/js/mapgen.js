@@ -33,37 +33,38 @@ function generateMap(nStars) {
 	var surroundingStar = [[0, 0, 0, []]]; // x, y, id, links angles
 	var createdStar = [[0, 0, 0]];
 	var createdLinks = [];
-	
+
 	var c = 1;
+
 	while (c < nStars && surroundingStar.length > 0) {
 		// Pick up a star in the surrounding
 		currentStar = surroundingStar[0];
-		
+
 		// Decide how many links are coming from this star
 		var N = Math.max(numberOfLinks() - currentStar[3].length, 0);
 		var takenDirs = currentStar[3];
-		
+
 		// For each link, create a star
 		for (var i = 0; i < N; i++) {
 			var dir = chooseDirection(takenDirs); // Angle in rad
-			
+
 			if (dir >= 0) {
 				takenDirs.push(dir);
 				var radius = avgRadius * (1 + Math.random() * 0.2);
-				
+
 				// Solve conflicts
 				dir = checkDirAvailable(dir, radius, currentStar, createdStar);
-				
+
 				// Add the star and the link if possible
 				if (dir > 0) {
 					var x = currentStar[0] + radius * Math.cos(dir);
 					var y = currentStar[1] + radius * Math.sin(dir);
-					
+
 					surroundingStar.push([x, y, c, [Math.PI + dir]]);
 					createdStar.push([x, y, c]);
 					createdLinks.push([currentStar[2], c]);
 					c++;
-					
+
 					if (c >= nStars) {
 						break;
 					}
@@ -72,20 +73,20 @@ function generateMap(nStars) {
 				}
 			}
 		}
-		
+
 		surroundingStar.splice(0, 1);
 	}
-	
+
 	// Generate the actual map
 	for (var k = 0; k < createdStar.length; k++) {
-		var s = createdStar[k]
+		var s = createdStar[k];
 		engine.addStar(s[0],
 						s[1],
 						parseInt(Math.random() * 10),
 						parseInt(Math.random() * 3), // To change
 						s[2]);
 	}
-	
+
 	for (k = 0; k < createdLinks.length; k++) {
 		var l = createdLinks[k];
 		engine.addLink(l[0],
@@ -101,33 +102,33 @@ function checkDirAvailable(dir, radius, currentStar, createdStar) {
 
 	minRadius = 150 * 150;
 	minStar = -1;
-	
+
 	for (var i = 0; i < createdStar.length; i++) {
 		r2 = Math.pow(createdStar[i][0] - x, 2) + Math.pow(createdStar[i][1] - y, 2);
-		
+
 		if (r2 < minRadius) {
 			minStar = i;
 			minRadius = r2;
 		}
 	}
-	
+
 	if (minStar < 0) {
 		return dir;
 	} else {
 		return -minStar;
-	}	
+	}
 }
 
 function numberOfLinks() {
 	var r = Math.random();
 	var N = 3;
-	
+
 	if (r < 0.1) {
-		N = 5
+		N = 5;
 	} else if (r < 0.5) {
-		N = 4
+		N = 4;
 	}
-	
+
 	return N;
 }
 
@@ -136,18 +137,19 @@ function chooseDirection(dirs) {
 	var D = 30;
 	var r = Math.random() * 2 * Math.PI / D;
 	var possibleDirs = [];
-	
+
 	for (var i = 0; i < D; i++) {
 		var newDir = 2 * Math.PI / D * i + r;
 		var availableDir = true;
 
 		for (var d = 0; d < dirs.length; d++) {
-			var angle = Math.abs(dirs[d] - newDir) % (Math.PI * 2)
+			var angle = Math.abs(dirs[d] - newDir) % (Math.PI * 2);
+
 			if (Math.min(angle, Math.PI - angle) < Math.PI / 4) {
 				availableDir = false;
 			}
 		}
-		
+
 		if (availableDir) {
 			possibleDirs.push(newDir);
 		}

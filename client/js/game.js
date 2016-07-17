@@ -3,7 +3,6 @@ space = new SpaceBackground(100);
 playerstate = new PlayerState(1);
 engine = new Engine(new DummyIo(), gameConstants);
 
-
 colorList.push(["hsl(180, 0%, 51%)", "hsl(180, 0%, 67%)"],
 			generateColor(220), generateColor(100));
 

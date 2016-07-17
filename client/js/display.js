@@ -75,7 +75,7 @@ Display = function () {
 				ctx.shadowBlur = 5;
 				ctx.strokeStyle = whiteSemiColor;
 				ctx.lineWidth = 4;
-				var radius = computeSatelliteRadius(obj.count);
+				radius = computeSatelliteRadius(obj.count);
 
 				ctx.beginPath();
 				ctx.arc(0, 0, radius, 0, Math.PI * 2);
@@ -87,46 +87,47 @@ Display = function () {
 
 			case "ship": // Draw a SHIP
 				obj = engine.game[i];
-				
+
+				var x, y;
 				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
 										engine.options.shipSpeed + obj.initRadius;
 				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
 				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
 				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-				
+
 				var theta = Math.acos(dx / L);
 
 				if (dy < 0) {
 					theta = -theta;
 				}
-				
+
 				if (obj.count > 0) {
 					// Draw a ship from star to star
-					var x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
-					var y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+					x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+					y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
 
 					drawShip(obj.id, x, y, theta, obj.count, 1, false);
-					
+
 				} else {
 					// Draw a ship seeking a satellite
 					var hasTakenSatellite = false;
-					
+
 					if (obj.count < 0) {
 						hasTakenSatellite = true;
 					}
-					
+
 					var alpha = crossedDistance / L * 2;
 					var gamma = Math.PI * 0.5 - theta - alpha;
 					var epsilon = theta + (Math.PI - alpha) * 0.5;
-					var r = L * Math.sin(alpha / 2);
+					r = L * Math.sin(alpha / 2);
 
-					var x = engine.game[obj.from].x + r * Math.cos(epsilon);
-					var y = engine.game[obj.from].y + r * Math.sin(epsilon);
-					
+					x = engine.game[obj.from].x + r * Math.cos(epsilon);
+					y = engine.game[obj.from].y + r * Math.sin(epsilon);
+
 					drawShip(obj.id, x, y, gamma, obj.count, 0.5, hasTakenSatellite);
 				}
-				
-				
+
+
 				break;
 
 			case "link": // Draw a LINK
@@ -137,12 +138,12 @@ Display = function () {
 
 				var s1 = engine.game[obj.startId];
 				var s2 = engine.game[obj.endId];
-				
+
 				translate(s1.x, s1.y);
 				ctx.setLineDash([20, 8]);
 
 				ctx.lineWidth = 3;
-				
+
 				if (s1.id == s2.id) {
 					ctx.strokeStyle = colorList[s1.id][0];
 				} else {
