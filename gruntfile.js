@@ -9,6 +9,7 @@ module.exports = function (grunt) {
 				src: [
 					"client/js/global.js",
 					"common/engine.js",
+					"client/js/DummyIo.js",
 					"client/js/display.js",
 					"client/js/mouse.js",
 					"client/js/satellite.js",
