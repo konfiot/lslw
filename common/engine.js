@@ -92,7 +92,7 @@ Engine.prototype.move = function (playerId, fromId, toId, number, callback) {
 					initRadius: computeStarRadius(this.game[fromId].count),
 					timestamp: res.ts
 				};
-				callback(true);
+				callback(res.id);
 			} else {
 				callback(false);
 			}
@@ -121,7 +121,7 @@ Engine.prototype.addStar = function (x, y, count, playerId, callback) {
 				count: count,
 				id: playerId
 			};
-			callback(true);
+			callback(res.id);
 		} else {
 			callback(false);
 		}
@@ -148,7 +148,7 @@ Engine.prototype.addSatellite = function (x, y, count, callback) {
 				y: y,
 				count: count
 			};
-			callback(true);
+			callback(res.id);
 		} else {
 			callback(false);
 		}
@@ -174,7 +174,7 @@ Engine.prototype.addLink = function (from, to, callback) {
 				from: from,
 				to: to
 			};
-			callback(true);
+			callback(res.id);
 		} else {
 			callback(false);
 		}
@@ -194,7 +194,7 @@ Engine.prototype.addPlayer = function (name, color, callback) {
 				name: name,
 				color: color
 			};
-			callback(true);
+			callback(res.id);
 		} else {
 			callback(false);
 		}
