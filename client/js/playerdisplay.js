@@ -8,7 +8,7 @@ playerDisplay = function () {
 	// Draws an aura around the hovered star
 	if (playerstate.hoveredStarId !== -1) {
 		var hStar = engine.game[playerstate.hoveredStarId];
-		
+
 		ctx.save();
 
 		translate(hStar.x, hStar.y);
@@ -37,7 +37,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeStarRadius(hStar.count), 0, Math.PI * 2);
+		ctx.arc(0, 0, computeStarRadius(hStat.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 

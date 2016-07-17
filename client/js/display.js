@@ -160,7 +160,7 @@ Display = function () {
 				break;
 		}
 	}
-	
+
 	for (layer in context) {
 		context[layer].restore();
 	}

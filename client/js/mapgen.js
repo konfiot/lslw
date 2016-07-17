@@ -76,13 +76,13 @@ function generateMap(nStars) {
 
 		surroundingStar.splice(0, 1);
 	}
-	
+
 	var currentStarId;
-	
+
 	function callbackStar(starId) {
 		currentStarId = starId;
-	};
-	
+	}
+
 	// Generate the actual map
 	for (var k = 0; k < createdStar.length; k++) {
 		var s = createdStar[k];
@@ -96,7 +96,7 @@ function generateMap(nStars) {
 
 	for (k = 0; k < createdLinks.length; k++) {
 		var l = createdLinks[k];
-		
+
 		engine.addLink(createdStar[l[0]], // from
 						createdStar[l[1]]); // to
 	}
