@@ -13,6 +13,14 @@ function DummyIo () {
 
 }
 
+DummyIo.prototype.attachDelFunction = function () {
+
+};
+
+DummyIo.prototype.attachUpFunction = function () {
+
+};
+
 DummyIo.prototype.move = function (playerId, fromId, toId, count, callback) {
 	callback({id: makeid(), ts: Date.now()});
 };
