@@ -3,12 +3,13 @@ function translate(x, y, ctx) {
 	ctx.translate(-playerstate.centerX + x, -playerstate.centerY + y);
 }
 
-function computeStarRadius(count) {
-	return 45 + Math.log(count + 1) * 5;
-}
+function computeRadius(type, count) {
 
-function computeSatelliteRadius(count) {
-	return 2 + 2 * count;
+	if (type === "star") {
+		return 45 + Math.log(count + 1) * 5;
+	} else if (type === "satellite") {
+		return 2 + 2 * count;
+	}
 }
 
 function distance(a, b) {

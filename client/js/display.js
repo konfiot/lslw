@@ -35,7 +35,7 @@ Display = function () {
 				ctx.fillStyle = engine.game[obj.id].color[0];
 				ctx.strokeStyle = engine.game[obj.id].color[1];
 				ctx.lineWidth = 6;
-				var radius = computeStarRadius(obj.count);
+				var radius = computeRadius("star", obj.count);
 
 				ctx.beginPath();
 				ctx.arc(0, 0, radius, 0, Math.PI * 2);
@@ -75,7 +75,7 @@ Display = function () {
 				ctx.shadowBlur = 5;
 				ctx.strokeStyle = whiteSemiColor;
 				ctx.lineWidth = 4;
-				radius = computeSatelliteRadius(obj.count);
+				radius = computeRadius("satellite", obj.count);
 
 				ctx.beginPath();
 				ctx.arc(0, 0, radius, 0, Math.PI * 2);

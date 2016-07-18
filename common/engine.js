@@ -91,7 +91,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 
 	if (this.possibleTrip(fromId, toId)) {
 		that = this; // ??
-		var radius = computeStarRadius(this.game[fromId].count);
+		var radius = computeRadius("star", this.game[fromId].count);
 
 		this.io.move(playerId, fromId, toId, count, function (res) {
 			if (res) {

@@ -17,7 +17,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeStarRadius(hStar.count), 0, Math.PI * 2);
+		ctx.arc(0, 0, computeRadius("star", hStar.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -25,7 +25,7 @@ playerDisplay = function () {
 	}
 
 	// Draws an aura around the hovered satellite
-	if (playerstate.hoveredSatelliteId >= 0) {
+	if (playerstate.hoveredSatelliteId !== -1) {
 		var hSat = engine.game[playerstate.hoveredSatelliteId];
 
 		ctx.save();
@@ -37,7 +37,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeStarRadius(hStat.count), 0, Math.PI * 2);
+		ctx.arc(0, 0, computeRadius("satellite", hSat.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -60,7 +60,7 @@ playerDisplay = function () {
 
 		var c = Math.cos(theta);
 		var s = Math.sin(theta);
-		var h = computeStarRadius(star1.count) + 60;
+		var h = computeRadius("star", star1.count) + 60;
 
 		ctx.save();
 
@@ -82,7 +82,7 @@ playerDisplay = function () {
 		var current = playerstate.selectionAnimation[i];
 		var star = engine.game[current[0]];
 		var inc = 0.01; // TODO
-		var r = computeStarRadius(star.count) + 5;
+		var r = computeRadius("star", star.count) + 5;
 
 		ctx.save();
 

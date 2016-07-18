@@ -15,7 +15,7 @@ engine.addPlayer("Player2", generateColor(100), callbackPlayer);
 var playerstate = new PlayerState(playerIdList[1]);
 
 generateMap(100);
-generateSatellites(100, 400);
+generateSatellites(100, 1000);
 
 // Connect events
 document.addEventListener("mousedown", downHandler, false);

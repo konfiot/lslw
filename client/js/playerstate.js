@@ -61,7 +61,7 @@ PlayerState.prototype.update = function () {
 			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
 							Math.pow(mouse.worldY - engine.game[j].y, 2);
 
-			if (radius2 < Math.pow(computeStarRadius(engine.game[j].count) * 1.5 + 10 / playerstate.scale, 2)) {
+			if (radius2 < Math.pow(computeRadius(engine.game[j].type, engine.game[j].count) * 1.5 + 10 / playerstate.scale, 2)) {
 
 				if (engine.game[j].type == "star") {
 					this.hoveredStarId = j;
