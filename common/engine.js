@@ -73,30 +73,29 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId, countTest) {
 					Math.pow(y - this.game[i].y, 2);
 
 			if (r2 < range2) {
-				reachableStars.push([i, r2])
+				reachableStars.push([i, r2]);
 			}
 		}
 	}
-	
+
 	if (countTest) {
 
 		for (var k = reachableStars.length - 1; k >= 0; k--) {
 
-			if (engine.game[reachableStars[k][0]].count == 0) {
+			if (engine.game[reachableStars[k][0]].count === 0) {
 				reachableStars.splice(k, 1);
 			}
 		}
 	}
 
 	if (reachableStars.length > 0) {
-		reachableStars.sort(function(a,b){return a[1]>b[1];});
+		reachableStars.sort(function (a, b) { return a[1] > b[1]; });
 
 		return reachableStars[0][0];
 	} else {
 
 		return -1;
 	}
-	
 };
 
 // Return a boolean to tell wether or not a certain path is allowed to be taken
@@ -182,7 +181,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 					timestamp: res.ts
 				};
 				callback(res.id);
-				//setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
+				// setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
 			} else {
 				callback(false);
 			}
