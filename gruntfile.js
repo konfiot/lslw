@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 					"client/js/display.js",
 					"client/js/mapgen.js",
 					"client/js/utils.js",
-					"client/js/space.js"
+					"client/js/space.js",
 					"client/js/inputs.js",
 					"client/js/game.js"
 				],
