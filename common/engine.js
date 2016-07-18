@@ -29,7 +29,7 @@ Engine.prototype.finished = function (id) {
 Engine.prototype.update = function () {
 	time = this.serverTimestamp();
 
-	for (var i in game) {
+	for (var i in this.game) {
 		if (this.game[i].type === "ship" && this.finished(i)) {
 			dest = this.game[i].to;
 
@@ -52,7 +52,7 @@ Engine.prototype.update = function () {
 					this.game[i].to = game[i].from;
 					this.game[i].from = dest;
 					this.game[i].number += game[dest].number;
-					delete game[dest];
+					delete this.game[dest];
 			}
 		}
 	}
