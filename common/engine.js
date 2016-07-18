@@ -7,11 +7,6 @@ function Engine(io, gameConstants) {
 	this.options = gameConstants;
 }
 
-// Synchronize the engine
-Engine.prototype.fullSync = function () {
-	this.game = io.getGameData();
-};
-
 // Returns the id of the closest star from a given satellite. -1 if out of reach
 Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 	var x = this.game[satelliteId].x;
@@ -60,6 +55,14 @@ Engine.prototype.possibleTrip = function (fromId, toId) {
 
 		return false;
 	}
+};
+
+// Synchronize the engine
+Engine.prototype.fullSync = function () {
+	that = this;
+	io.getGameData(function (res) {
+		that.game = res;
+	});
 };
 
 // Send a ship to harvest a satellite
@@ -222,4 +225,3 @@ Engine.prototype.serverTimestamp = function () {
 
 	return svTimestamp;
 };
-
