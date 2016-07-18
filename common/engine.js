@@ -125,7 +125,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 	// Check if given id exists and is assigned to a satellite
 	if (this.game[satelliteId].type === "satellite") {
 		nearest = this.getNearestStar(playerId, satelliteId);
-		
+
 		if (nearest !== -1) {
 			this.move(playerId, nearest, satelliteId, 0, callback);
 		} else {
