@@ -5,7 +5,58 @@ function Engine(io, gameConstants) {
 	this.io = io;
 	this.game = {};
 	this.options = gameConstants;
+	this.io.attachDelCallback(this.del);
+	this.io.arrachUpCallback(this.up);
 }
+
+Engine.prototype.del = function (id) {
+	delete this.game[id];
+};
+
+Engine.prototype.up = function (id, data) {
+	this.game[id] = data;
+};
+
+Engine.prototype.ETA = function (id) {
+	// TODO
+};
+
+Engine.prototype.finished = function (id) {
+	return (this.serverTimestamp() >= this.ETA(i));
+};
+
+// Updates the game
+Engine.prototype.update = function () {
+	time = this.serverTimestamp();
+
+	for (var i in game) {
+		if (this.game[i].type === "ship" && this.finished(i)) {
+			dest = this.game[i].to;
+
+			switch (dest.type) {
+				case "star":
+					if (this.game[i].id === this.game[dest].id) {
+						this.game[dest].number += this.game[i].number;
+					} else {
+						this.game[dest].number = Math.abs(this.game[dest].number - this.game[i].number);
+
+						if (this.game[i].number >= this.game[dest].number) {
+							this.game[dest].id = this.game[i].id;
+						}
+					}
+					delete this.game[i];
+					break;
+
+				case "satellite":
+					this.game[i].ts = this.ETA(i);
+					this.game[i].to = game[i].from;
+					this.game[i].from = dest;
+					this.game[i].number += game[dest].number;
+					delete game[dest];
+			}
+		}
+	}
+};
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
 Engine.prototype.getNearestStar = function (playerId, satelliteId) {
@@ -105,6 +156,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 					timestamp: res.ts
 				};
 				callback(res.id);
+				setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
 			} else {
 				callback(false);
 			}
