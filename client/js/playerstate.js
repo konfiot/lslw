@@ -13,6 +13,7 @@ function PlayerState(id) {
 	this.isDragging = false;
 
 	this.hoveredSatelliteId = -1;
+	this.clickedSatellites = [];
 
 	this.centerX = 0;
 	this.centerY = 0;
@@ -65,8 +66,10 @@ PlayerState.prototype.update = function () {
 
 				if (engine.game[j].type == "star") {
 					this.hoveredStarId = j;
+					break;
 				} else {
 					this.hoveredSatelliteId = j;
+					break;
 				}
 			}
 		}
@@ -81,9 +84,22 @@ PlayerState.prototype.update = function () {
 			this.newSelection(this.hoveredStarId);
 		}
 	}
+	
+	// Update which satellite is selected
+	if (mouse.isMouseDown && !this.dragging &&
+		this.hoveredSatelliteId !== -1 && this.clickedSatellites.indexOf(this.hoveredSatelliteId) < 0 ) {
 
+		var callbackSat = (function(id) {
+			if (id !== false) {
+				this.clickedSatellites.push(this.hoveredSatelliteId);
+			}
+		}).bind(this);
+
+		engine.getSatellite(this.id, this.hoveredSatelliteId, callbackSat);
+	}
+	
 	// If clicked out a star, deselect
-	if (this.hoveredStarId < 0 && mouse.isMouseDown) {
+	if (this.hoveredStarId === -1 && mouse.isMouseDown) {
 		delta = Math.pow(mouse.lastClickedX - mouse.x, 2) + Math.pow(mouse.lastClickedY - mouse.y, 2);
 
 		if (delta < 2) {
