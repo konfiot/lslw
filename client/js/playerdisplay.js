@@ -45,7 +45,7 @@ playerDisplay = function () {
 	}
 
 	// Draws the automation indicators
-	for (i = 0; i < engine.game[playerstate.id].automation.length; i++) {
+	for (var i = 0; i < engine.game[playerstate.id].automation.length; i++) {
 		var star1 = engine.game[engine.game[playerstate.id].automation[i][0]];
 		var star2 = engine.game[engine.game[playerstate.id].automation[i][1]];
 		var dx = star2.x - star1.x;
@@ -78,7 +78,7 @@ playerDisplay = function () {
 	}
 
 	// Draws the selection cursor
-	for (var i = 0; i < playerstate.selectionAnimation.length ; i++) {
+	for (i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];
 		var star = engine.game[current[0]];
 		var inc = 0.01; // TODO
@@ -96,6 +96,23 @@ playerDisplay = function () {
 		ctx.beginPath();
 		ctx.arc(0, 0, r, inc, Math.PI * 2 + inc);
 		ctx.stroke();
+		ctx.closePath();
+
+		ctx.restore();
+	}
+	
+	// Draws the selection marker for the satellites
+	for (i = 0; i < playerstate.clickedSatellites.length; i++) {
+		var sat = engine.game[playerstate.clickedSatellites[i]];
+
+		ctx.save();
+
+		translate(sat.x, sat.y, ctx);
+		ctx.fillStyle = whiteTransparentColor;
+
+		ctx.beginPath();
+		ctx.arc(0, 0, computeRadius("satellite", sat.count) + 8, 0, Math.PI * 2);
+		ctx.fill();
 		ctx.closePath();
 
 		ctx.restore();

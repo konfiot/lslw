@@ -17,11 +17,11 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 
 	for (var i in this.game) {
 		// Only look at player's stars
-		if (this.game[i].id == playerId && this.game[i].type == "s")  {
-			r2 = Math.pow(x - this.game.stars[i].x, 2) +
+		if (this.game[i].type == "star" && this.game[i].id == playerId)  {
+			r2 = Math.pow(x - this.game[i].x, 2) +
 					Math.pow(y - this.game[i].y, 2);
 
-			if (r2 < closestDist && r2 < this.options.range) {
+			if (r2 < closestDist && r2 < Math.pow(this.options.range, 2)) {
 				closestDist = r2;
 				closestStar = i;
 			}
@@ -72,11 +72,11 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 	}
 
 	// Check if given id exists and is assigned to a satellite
-	if (this.game[satelliteId] !== undefined || this.game[satelliteId].type === "s") {
-		nearest = getNearestStar(playerId, satelliteId);
-
-		if (nearest >= 0) {
-			this.move(playerId, nearest, satelliteId, this.options.shipsPerSatellite, callback);
+	if (this.game[satelliteId].type === "satellite") {
+		nearest = this.getNearestStar(playerId, satelliteId);
+		
+		if (nearest !== -1) {
+			this.move(playerId, nearest, satelliteId, 0, callback);
 		} else {
 			callback(false);
 		}
