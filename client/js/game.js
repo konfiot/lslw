@@ -1,6 +1,6 @@
 // Initializing
 var mouse = new Mouse();
-var space = new SpaceBackground(100);
+var space = new SpaceBackground(150);
 var engine = new Engine(new DummyIo(), gameConstants);
 
 function callbackPlayer(playerId) {
