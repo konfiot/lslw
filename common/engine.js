@@ -134,14 +134,23 @@ Engine.prototype.fullSync = function () {
 };
 
 // Send a ship to harvest a satellite
-Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
+Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, callback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
 	}
 
 	// Check if given id exists and is assigned to a satellite
 	if (this.game[satelliteId].type === "satellite") {
-		nearest = this.getNearestStar(playerId, satelliteId, true);
+		var nearest = -1;
+
+		// If no particular star is given, search for one available
+		if (fromStarId == -1) {
+			nearest = this.getNearestStar(playerId, satelliteId, true);
+		} else {
+			if (engine.game[fromStarId].count !== 0) {
+				nearest = fromStarId;
+			}
+		}
 
 		if (nearest !== -1) {
 			this.move(playerId, nearest, satelliteId, 0, callback);
@@ -173,7 +182,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 					timestamp: res.ts
 				};
 				callback(res.id);
-				setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
+				//setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
 			} else {
 				callback(false);
 			}

@@ -95,7 +95,7 @@ PlayerState.prototype.update = function () {
 			}
 		}).bind(this);
 
-		engine.getSatellite(this.id, this.hoveredSatelliteId, callbackSat);
+		engine.getSatellite(this.id, this.hoveredSatelliteId, this.selectedStar, callbackSat);
 	}
 
 	// If clicked out a star, deselect
