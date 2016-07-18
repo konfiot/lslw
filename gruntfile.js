@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 			js: {
 				src: [
 					"common/engine.js",
-					"client/js/DummyIo.js",
+					"client/js/dummyio.js",
 					"client/js/global.js",
 					"client/js/display.js",
 					"client/js/mouse.js",

@@ -13,11 +13,11 @@ function DummyIo () {
 
 }
 
-DummyIo.prototype.attachDelFunction = function () {
+DummyIo.prototype.attachDelCallback = function () {
 
 };
 
-DummyIo.prototype.attachUpFunction = function () {
+DummyIo.prototype.attachUpCallback = function () {
 
 };
 

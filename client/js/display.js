@@ -112,7 +112,7 @@ Display = function () {
 					}
 				} else {
 
-					// Draw a ship seeking a satellite
+					// Draw a ship going for a satellite
 					if (crossedDistance < Math.PI * L) {
 						var hasTakenSatellite = false;
 
@@ -121,7 +121,7 @@ Display = function () {
 						}
 
 						var alpha = crossedDistance / L * 2;
-						var gamma = Math.PI * 0.5 - theta - alpha;
+						var gamma = Math.PI * 0.5 + theta - alpha;
 						var epsilon = theta + (Math.PI - alpha) * 0.5;
 						r = L * Math.sin(alpha / 2);
 

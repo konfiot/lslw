@@ -6,7 +6,7 @@ function Engine(io, gameConstants) {
 	this.game = {};
 	this.options = gameConstants;
 	this.io.attachDelCallback(this.del);
-	this.io.arrachUpCallback(this.up);
+	this.io.attachUpCallback(this.up);
 }
 
 Engine.prototype.del = function (id) {
