@@ -59,12 +59,12 @@ Engine.prototype.update = function () {
 };
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
-Engine.prototype.getNearestStar = function (playerId, satelliteId) {
+Engine.prototype.getNearestStar = function (playerId, satelliteId, countTest) {
 	var x = this.game[satelliteId].x;
 	var y = this.game[satelliteId].y;
 
-	closestStar = -1;
-	closestDist = Math.pow(this.options.range + 1, 2);
+	var reachableStars = [];
+	var range2 =  Math.pow(this.options.range + 1, 2);
 
 	for (var i in this.game) {
 		// Only look at player's stars
@@ -72,14 +72,31 @@ Engine.prototype.getNearestStar = function (playerId, satelliteId) {
 			r2 = Math.pow(x - this.game[i].x, 2) +
 					Math.pow(y - this.game[i].y, 2);
 
-			if (r2 < closestDist && r2 < Math.pow(this.options.range, 2)) {
-				closestDist = r2;
-				closestStar = i;
+			if (r2 < range2) {
+				reachableStars.push([i, r2])
+			}
+		}
+	}
+	
+	if (countTest) {
+
+		for (var k = reachableStars.length - 1; k >= 0; k--) {
+
+			if (engine.game[reachableStars[k][0]].count == 0) {
+				reachableStars.splice(k, 1);
 			}
 		}
 	}
 
-	return closestStar;
+	if (reachableStars.length > 0) {
+		reachableStars.sort(function(a,b){return a[1]>b[1];});
+
+		return reachableStars[0][0];
+	} else {
+
+		return -1;
+	}
+	
 };
 
 // Return a boolean to tell wether or not a certain path is allowed to be taken
@@ -124,7 +141,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, callback) {
 
 	// Check if given id exists and is assigned to a satellite
 	if (this.game[satelliteId].type === "satellite") {
-		nearest = this.getNearestStar(playerId, satelliteId);
+		nearest = this.getNearestStar(playerId, satelliteId, true);
 
 		if (nearest !== -1) {
 			this.move(playerId, nearest, satelliteId, 0, callback);

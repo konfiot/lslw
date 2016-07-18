@@ -13,7 +13,7 @@ var context = {
 
 var gameConstants = {
 	shipSpeed : 70, // px/sec
-	range : 200,
+	range : 250,
 	satMinDist : 130
 };
 

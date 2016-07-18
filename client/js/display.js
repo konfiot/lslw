@@ -128,7 +128,7 @@ Display = function () {
 						x = engine.game[obj.from].x + r * Math.cos(epsilon);
 						y = engine.game[obj.from].y + r * Math.sin(epsilon);
 
-						drawShip(obj.id, x, y, gamma, obj.count, 0.5, hasTakenSatellite);
+						drawShip(obj.id, x, y, gamma, -obj.count, 0.5, hasTakenSatellite);
 					}
 				}
 
