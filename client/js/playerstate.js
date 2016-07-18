@@ -75,16 +75,6 @@ PlayerState.prototype.update = function () {
 		}
 	}
 
-	// Update which star is selected
-	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId !== -1) {
-		this.previousClickedStar = this.clickedStar;
-		this.clickedStar = this.hoveredStarId;
-
-		if (engine.game[this.hoveredStarId].id === this.id) {
-			this.newSelection(this.hoveredStarId);
-		}
-	}
-
 	// Update which satellite is selected
 	if (mouse.isMouseDown && !this.dragging &&
 		this.hoveredSatelliteId !== -1 && this.clickedSatellites.indexOf(this.hoveredSatelliteId) < 0) {
@@ -98,8 +88,18 @@ PlayerState.prototype.update = function () {
 		engine.getSatellite(this.id, this.hoveredSatelliteId, this.selectedStar, callbackSat);
 	}
 
+	// Update which star is selected
+	if (mouse.isMouseDown && !this.dragging && this.hoveredStarId !== -1) {
+		this.previousClickedStar = this.clickedStar;
+		this.clickedStar = this.hoveredStarId;
+
+		if (engine.game[this.hoveredStarId].id === this.id) {
+			this.newSelection(this.hoveredStarId);
+		}
+	}
+
 	// If clicked out a star, deselect
-	if (this.hoveredStarId === -1 && mouse.isMouseDown) {
+	if (this.hoveredStarId === -1 && this.hoveredSatelliteId === -1 && mouse.isMouseDown) {
 		delta = Math.pow(mouse.lastClickedX - mouse.x, 2) + Math.pow(mouse.lastClickedY - mouse.y, 2);
 
 		if (delta < 2) {

@@ -143,7 +143,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, cal
 		var nearest = -1;
 
 		// If no particular star is given, search for one available
-		if (fromStarId == -1) {
+		if (fromStarId === -1) {
 			nearest = this.getNearestStar(playerId, satelliteId, true);
 		} else {
 			if (engine.game[fromStarId].count !== 0) {
