@@ -46,16 +46,43 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	}
 
 	edgeSet = removeDoubleEdges(edgeSet);
+	
+	// Remove some points
+	var idToRemoveList = [];
 
-	var linksToRemove = parseInt(sparsity * edgeSet.length);
-	var l = 0;
+	var radius2 = (size * 0.92) * (size * 0.92);
 
-	while (l < linksToRemove) {
-		var index = parseInt(Math.random(edgeSet.length));
+	// Forming a circle
+	for (var s = 0; s < pointSet.length; s++) {
+		var r2 = Math.pow(pointSet[s].x, 2) + Math.pow(pointSet[s].y, 2);
 
-		edgeSet.splice(index, 1);
+		if (r2 > radius2) {
+			idToRemoveList.push(s);
+		}
+	}
 
-		l++;
+	var nPointsToRemove = parseInt(sparsity * pointSet.length);
+	var len = pointSet.length;
+	
+	for (var q = 0; q < nPointsToRemove; q++) {
+		idToRemoveList.push(parseInt(Math.random() * len));
+	}
+	
+	idToRemoveList.sort(function (a, b) { return b - a });
+
+	// Remove the vertices and edges
+	for (var p = 0; p < idToRemoveList.length; p++) {
+		var id = idToRemoveList[p];
+
+		for (var l = 0; l < edgeSet.length; l++) {
+
+			if (edgeSet[l].v0 === pointSet[id] ||
+				edgeSet[l].v1 === pointSet[id]) {
+				edgeSet.splice(l, 1);
+			}
+		}
+
+		pointSet.splice(id, 1);
 	}
 
 	// Generate the actual map
