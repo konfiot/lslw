@@ -14,8 +14,10 @@ engine.addPlayer("Player2", generateColor(100), callbackPlayer);
 
 var playerstate = new PlayerState(playerIdList[1]);
 
-generateMap(100);
-generateSatellites(100, 1000);
+var nPoints = 20 * 20;
+var density = 0.5;
+var sparsity = 0.03;
+delaunayMapGeneration(nPoints, density, sparsity);
 
 // Connect events
 document.addEventListener("mousedown", downHandler, false);

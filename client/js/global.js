@@ -12,6 +12,7 @@ var context = {
 };
 
 var gameConstants = {
+	minDistBetweenStars : 200,
 	shipSpeed : 70, // px/sec
 	range : 250,
 	satMinDist : 130
