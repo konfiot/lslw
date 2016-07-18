@@ -100,7 +100,7 @@ playerDisplay = function () {
 
 		ctx.restore();
 	}
-	
+
 	// Draws the selection marker for the satellites
 	for (i = 0; i < playerstate.clickedSatellites.length; i++) {
 		var sat = engine.game[playerstate.clickedSatellites[i]];

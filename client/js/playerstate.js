@@ -84,12 +84,12 @@ PlayerState.prototype.update = function () {
 			this.newSelection(this.hoveredStarId);
 		}
 	}
-	
+
 	// Update which satellite is selected
 	if (mouse.isMouseDown && !this.dragging &&
-		this.hoveredSatelliteId !== -1 && this.clickedSatellites.indexOf(this.hoveredSatelliteId) < 0 ) {
+		this.hoveredSatelliteId !== -1 && this.clickedSatellites.indexOf(this.hoveredSatelliteId) < 0) {
 
-		var callbackSat = (function(id) {
+		var callbackSat = (function (id) {
 			if (id !== false) {
 				this.clickedSatellites.push(this.hoveredSatelliteId);
 			}
@@ -97,7 +97,7 @@ PlayerState.prototype.update = function () {
 
 		engine.getSatellite(this.id, this.hoveredSatelliteId, callbackSat);
 	}
-	
+
 	// If clicked out a star, deselect
 	if (this.hoveredStarId === -1 && mouse.isMouseDown) {
 		delta = Math.pow(mouse.lastClickedX - mouse.x, 2) + Math.pow(mouse.lastClickedY - mouse.y, 2);
