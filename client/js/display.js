@@ -1,6 +1,29 @@
 /*
 The main display. Iterate through the game elements
 */
+// Offscreen rendering //
+var offSateliteCanvas = document.createElement('canvas');
+var maxRadSat = 26
+offSateliteCanvas.width = 6 * maxRadSat;
+offSateliteCanvas.height = 2 * maxRadSat;
+var offSateliteCtx = offSateliteCanvas.getContext('2d');  
+
+// Satellites
+offSateliteCtx.fillStyle = whiteColor;
+offSateliteCtx.shadowColor = whiteColor;
+offSateliteCtx.shadowBlur = 5;
+offSateliteCtx.strokeStyle = whiteSemiColor;
+offSateliteCtx.lineWidth = 4;
+
+for (var a = 0; a < 3; a++) {
+	var radius = 6 + 2 * a;
+
+	offSateliteCtx.beginPath();
+	offSateliteCtx.arc(maxRadSat * (2 * a + 1), maxRadSat, radius, 0, Math.PI * 2);
+	offSateliteCtx.fill();
+	offSateliteCtx.stroke();
+}
+
 Display = function () {
 	// Setup the scene
 	var s = Math.min(playerstate.scale, 1.0);
@@ -66,22 +89,14 @@ Display = function () {
 			case "satellite": // Draw a SATELLITE
 				obj = engine.game[i];
 				ctx = context.stellar;
-
+				
 				ctx.save();
 
 				translate(obj.x, obj.y, ctx);
-				ctx.fillStyle = whiteColor;
-				ctx.shadowColor = whiteColor;
-				ctx.shadowBlur = 5;
-				ctx.strokeStyle = whiteSemiColor;
-				ctx.lineWidth = 4;
-				radius = computeRadius("satellite", obj.count);
-
-				ctx.beginPath();
-				ctx.arc(0, 0, radius, 0, Math.PI * 2);
-				ctx.fill();
-				ctx.stroke();
-
+				ctx.drawImage(offSateliteCanvas,
+								maxRadSat * 2 * (obj.count - 2), 0, 2 * maxRadSat, 2 * maxRadSat,
+								-maxRadSat,-maxRadSat,2 * maxRadSat, 2 * maxRadSat);
+				
 				ctx.restore();
 				break;
 

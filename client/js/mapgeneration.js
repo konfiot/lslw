@@ -3,6 +3,7 @@ Map generation using Delaunay Triangulation
 */
 delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var size = Math.sqrt(nPoints) * engine.options.minDistBetweenStars * (1 - density);
+	var nSat = parseInt(nPoints * 1.5);
 
 	var pointSet = [];
 	var edgeSet = [];
@@ -104,5 +105,76 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	for (m = 0; m < edgeSet.length; m++) {
 		engine.addLink(edgeSet[m].v0.id, // from
 						edgeSet[m].v1.id); // to
+	}
+
+	// Create satellites
+	var createdSatellites = []; // x, y, count
+
+	for (var i = 0; i < nSat; i++) {
+		var x = parseInt(size * (Math.random() * 2 - 1));
+		var y = parseInt(size * (Math.random() * 2 - 1));
+		var count = 2 + parseInt(Math.random() * 3);
+
+		for (var s in engine.game) {
+
+			// Iteration over stars to find if the future satellite is not too close
+			if (engine.game[s].type === "star") {
+				var dx = x - engine.game[s].x;
+				var dy = y - engine.game[s].y;
+				var r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+				if (r < engine.options.satMinDist) {
+					var f = engine.options.satMinDist / r;
+
+					// Update coordinates
+					x = engine.game[s].x + f * dx;
+					y = engine.game[s].y + f * dy;
+				}
+			}
+		}
+
+		createdSatellites.push([x, y, count]);
+	}
+
+	for (var j = 0; j < createdSatellites.length; j++) {
+		engine.addSatellite(createdSatellites[j][0],
+							createdSatellites[j][1],
+							createdSatellites[j][2]);
+	}
+};
+
+generateSatellites = function (nSat, size) {
+	var createdSatellites = []; // x, y, count
+
+	for (var i = 0; i < nSat; i++) {
+		var x = parseInt(size * (Math.random() * 2 - 1));
+		var y = parseInt(size * (Math.random() * 2 - 1));
+		var count = 2 + parseInt(Math.random() * 3);
+
+		for (var s in engine.game) {
+
+			// Iteration over stars to find if the future satellite is not too close
+			if (engine.game[s].type === "star") {
+				var dx = x - engine.game[s].x;
+				var dy = y - engine.game[s].y;
+				var r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+				if (r < engine.options.satMinDist) {
+					var f = engine.options.satMinDist / r;
+
+					// Update coordinates
+					x = engine.game[s].x + f * dx;
+					y = engine.game[s].y + f * dy;
+				}
+			}
+		}
+
+		createdSatellites.push([x, y, count]);
+	}
+
+	for (var j = 0; j < createdSatellites.length; j++) {
+		engine.addSatellite(createdSatellites[j][0],
+							createdSatellites[j][1],
+							createdSatellites[j][2]);
 	}
 };

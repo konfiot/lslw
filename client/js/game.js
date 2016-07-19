@@ -14,7 +14,7 @@ engine.addPlayer("Player2", generateColor(100), callbackPlayer);
 
 var playerstate = new PlayerState(playerIdList[1]);
 
-var nPoints = 50 * 50;
+var nPoints = 40 * 40;
 var density = 0.5;
 var sparsity = 0.1;
 delaunayMapGeneration(nPoints, density, sparsity);

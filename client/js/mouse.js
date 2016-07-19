@@ -42,9 +42,9 @@ Mouse.prototype.wheelHandler = function (e) {
 	// Set boundaries
 	var newScale = playerstate.scale * (1 + delta * 0.05);
 
-	if (newScale < 3 || delta < 0) {
+	if ((newScale <= 3 || delta < 0) && newScale > 0.2) {
 		playerstate.scale = newScale;
-	} else {
+	} else if (newScale > 3) {
 		// Custom formula
 		playerstate.scale = playerstate.scale + 0.15 * delta * Math.exp(-3 * 0.1) * Math.exp(-playerstate.scale * 0.1);
 	}
