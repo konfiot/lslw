@@ -65,4 +65,10 @@ function computeLink(star1, x2, y2) {
 	return [x, y, theta, L];
 }
 
+function isOnScreen(x, y) {
+	var X = (x - playerstate.centerX) * playerstate.scale * 0.9;
+	var Y = (y - playerstate.centerY) * playerstate.scale * 0.9;
 
+	return (X > -canvas.ships.width / 2 && X < canvas.ships.width / 2 &&
+			Y > -canvas.ships.height / 2 && Y < canvas.ships.height / 2);
+}

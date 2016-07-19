@@ -36,7 +36,7 @@ Display = function () {
 		context[layer].translate(canvas[layer].width / 2, canvas[layer].height / 2);
 		context[layer].scale(playerstate.scale, playerstate.scale);
 	}
-
+	
 	// Draw the space
 	space.draw();
 
@@ -47,61 +47,68 @@ Display = function () {
 	var obj = null;
 
 	for (var i in engine.game) {
+		obj = engine.game[i];
+
 		switch (engine.game[i].type) {
 			case "star": // Draw a STAR
-				obj = engine.game[i];
-				ctx = context.stellar;
 
-				ctx.save();
+				if (isOnScreen(obj.x, obj.y)) {
+					ctx = context.stellar;
 
-				translate(obj.x, obj.y, ctx);
-				ctx.fillStyle = engine.game[obj.id].color[0];
-				ctx.strokeStyle = engine.game[obj.id].color[1];
-				ctx.lineWidth = 6;
-				var radius = computeRadius("star", obj.count);
+					ctx.save();
 
-				ctx.beginPath();
-				ctx.arc(0, 0, radius, 0, Math.PI * 2);
-				ctx.fill();
-				ctx.stroke();
-				ctx.closePath();
+					translate(obj.x, obj.y, ctx);
+					ctx.fillStyle = engine.game[obj.id].color[0];
+					ctx.strokeStyle = engine.game[obj.id].color[1];
+					ctx.lineWidth = 6;
+					var radius = computeRadius("star", obj.count);
 
-				// Reflection effect
-				ctx.fillStyle = whiteTransparentColor;
-				var r = radius - 9;
+					ctx.beginPath();
+					ctx.arc(0, 0, radius, 0, Math.PI * 2);
+					ctx.fill();
+					ctx.stroke();
+					ctx.closePath();
 
-				ctx.beginPath();
-				ctx.arc(0, 0, r, Math.PI, 0);
-				ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
-				ctx.fill();
-				ctx.closePath();
+					// Reflection effect
+					ctx.fillStyle = whiteTransparentColor;
+					var r = radius - 9;
 
-				// Write the score
-				ctx.font = "lighter " + String(parseInt(radius)) + "px arial";
-				ctx.fillStyle = whiteSemiColor;
-				ctx.textAlign = "center";
-				ctx.textBaseline = "middle";
-				ctx.fillText(obj.count, 0, 5);
+					ctx.beginPath();
+					ctx.arc(0, 0, r, Math.PI, 0);
+					ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
+					ctx.fill();
+					ctx.closePath();
 
-				ctx.restore();
+					// Write the score
+					ctx.font = "lighter " + String(parseInt(radius)) + "px arial";
+					ctx.fillStyle = whiteSemiColor;
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
+					ctx.fillText(obj.count, 0, 5);
+
+					ctx.restore();
+				}
+
 				break;
 
 			case "satellite": // Draw a SATELLITE
-				obj = engine.game[i];
-				ctx = context.stellar;
-				
-				ctx.save();
 
-				translate(obj.x, obj.y, ctx);
-				ctx.drawImage(offSateliteCanvas,
+				if (isOnScreen(obj.x, obj.y)) {
+					ctx = context.stellar;
+					ctx.save();
+
+					translate(obj.x, obj.y, ctx);
+					ctx.drawImage(offSateliteCanvas,
 								maxRadSat * 2 * (obj.count - 2), 0, 2 * maxRadSat, 2 * maxRadSat,
 								-maxRadSat,-maxRadSat,2 * maxRadSat, 2 * maxRadSat);
-				
-				ctx.restore();
+
+					ctx.restore();
+				}
+
 				break;
 
 			case "ship": // Draw a SHIP
-				obj = engine.game[i];
+
 				var x, y;
 				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
 										engine.options.shipSpeed + obj.initRadius;
@@ -150,7 +157,6 @@ Display = function () {
 				break;
 
 			case "link": // Draw a LINK
-				obj = engine.game[i];
 				ctx = context.background;
 
 				ctx.save();
