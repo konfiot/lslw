@@ -10,23 +10,31 @@ function makeid () {
 }
 
 function Io () {
-	var	ws = new WebSocket("SERVER_URL"),
-		awaiting = {};
+	this.ws = new WebSocket("SERVER_URL");
+	this.awaiting = {};
+	this.upCb = function () {};
+	this.delCb = function () {};
 
 	ws.onmessage = function (e) {
 		msg = JSON.parse(e.data);
 
 		switch (msg.type) {
-			case "up":
-				awaiting[msg.id](msg.game);
+			case "u":
+				this.awaiting[msg.id](msg.game);
 				break;
 
 			case "ship":
-				awaiting[msg.id]({id: msg.id, ts: msg.ts});
+				this.awaiting[msg.id]({id: msg.id, ts: msg.ts});
 				break;
 
 			case "player":
-				awaiting[msg.id]({id: msg.id});
+				this.awaiting[msg.id]({id: msg.id});
+				break;
+			case "del":
+				this.delCb(msg.id);
+				break;
+			case "up":
+				this.upCb(msg.id, msg.data);
 				break;
 		}
 	};
@@ -34,8 +42,8 @@ function Io () {
 
 Io.prototype.move = function (playerId, fromId, toId, number, callback) {
 	id = makeid();
-	awaiting[id] = callback;
-	ws.send(JSON.stringify({
+	this.awaiting[id] = callback;
+	this.ws.send(JSON.stringify({
 		id: id,
 		type: "ship",
 		from: fromId,
