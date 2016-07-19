@@ -17,12 +17,28 @@ Engine.prototype.up = function (id, data) {
 	this.game[id] = data;
 };
 
-Engine.prototype.ETA = function (id) {
-	// TODO
+// Returns the time required for a ship to travel
+Engine.prototype.tripDuration = function (id) {
+	var ship = this.game[id];
+	var dest = ship.to;
+
+	var L = distance(this.game[ship.from], this.game[ship.to]);
+
+	switch (this.game[dest].type) {
+		case "star":
+			
+			return ((L - ship.initRadius - computeRadius("star", this.game[ship.to].count))
+							/ this.options.shipSpeed * 1000);
+
+		case "satellite":
+			return ((L - ship.initRadius - computeRadius("star", this.game[ship.from].count))
+							/ this.options.shipSpeed * 1000);
+	}
 };
 
+// Check if the trip takes more time than it should
 Engine.prototype.finished = function (id) {
-	return (this.serverTimestamp() >= this.ETA(i));
+	return (this.serverTimestamp() - this.game[id].timestamp >= this.tripDuration(id));
 };
 
 // Updates the game
@@ -31,27 +47,36 @@ Engine.prototype.update = function () {
 
 	for (var i in this.game) {
 		if (this.game[i].type === "ship" && this.finished(i)) {
-			dest = this.game[i].to;
+			var ship = this.game[i];
+			var dest = this.game[ship.to];
 
 			switch (dest.type) {
 				case "star":
-					if (this.game[i].id === this.game[dest].id) {
-						this.game[dest].number += this.game[i].number;
-					} else {
-						this.game[dest].number = Math.abs(this.game[dest].number - this.game[i].number);
 
-						if (this.game[i].number >= this.game[dest].number) {
-							this.game[dest].id = this.game[i].id;
+					if (ship.id === dest.id) {
+						// The ship is for reinforcemnt
+						dest.count += ship.count;
+					} else {
+						// The ship attacks
+						newCount = dest.count - ship.count;
+						
+						if (newCount >= 0) {
+							// Not enough to convert
+							dest.count = newCount;
+						} else {
+							// The star is conquered
+							dest.count = -newCount - 1;
+							dest.id = ship.id;
 						}
 					}
-					delete this.game[i];
+					this.del(i);
 					break;
 
 				case "satellite":
 					this.game[i].ts = this.ETA(i);
 					this.game[i].to = game[i].from;
 					this.game[i].from = dest;
-					this.game[i].number += game[dest].number;
+					this.game[i].count += game[dest].count;
 					delete this.game[dest];
 			}
 		}
@@ -166,9 +191,10 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 	}
 
 	if (this.possibleTrip(fromId, toId)) {
-		that = this; // ??
+		that = this;
 		var radius = computeRadius("star", this.game[fromId].count);
-
+		// TODO
+		this.game[fromId].count -= count;
 		this.io.move(playerId, fromId, toId, count, function (res) {
 			if (res) {
 				that.game[res.id] = {

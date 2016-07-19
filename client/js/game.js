@@ -40,6 +40,7 @@ function draw(timestamp) {
 	time = timestamp;
 
 	playerstate.update();
+	engine.update();
 	Display();
 
 	requestAnimationFrame(draw);
