@@ -93,7 +93,7 @@ Display = function () {
 
 			case "satellite": // Draw a SATELLITE
 
-				if (isOnScreen(obj.x, obj.y)) {
+				if (obj.visible && isOnScreen(obj.x, obj.y)) {
 					ctx = context.stellar;
 					ctx.save();
 
@@ -108,7 +108,6 @@ Display = function () {
 				break;
 
 			case "ship": // Draw a SHIP
-
 				var x, y;
 				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
 										engine.options.shipSpeed + obj.initRadius;
@@ -123,7 +122,7 @@ Display = function () {
 					theta = -theta;
 				}
 
-				if (obj.count > 0) {
+				if (engine.game[obj.to].type === "star") {
 
 					// Draw a ship from star to star
 					if (crossedDistance < L) {
@@ -138,7 +137,7 @@ Display = function () {
 					if (crossedDistance < Math.PI * L) {
 						var hasTakenSatellite = false;
 
-						if (obj.count < 0) {
+						if (obj.count > 1) {
 							hasTakenSatellite = true;
 						}
 
@@ -150,7 +149,7 @@ Display = function () {
 						x = engine.game[obj.from].x + r * Math.cos(epsilon);
 						y = engine.game[obj.from].y + r * Math.sin(epsilon);
 
-						drawShip(obj.id, x, y, gamma, -obj.count, 0.5, hasTakenSatellite);
+						drawShip(obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite);
 					}
 				}
 

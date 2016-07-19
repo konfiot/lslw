@@ -31,14 +31,28 @@ Engine.prototype.tripDuration = function (id) {
 							/ this.options.shipSpeed * 1000);
 
 		case "satellite":
-			return ((L - ship.initRadius - computeRadius("star", this.game[ship.from].count))
+
+			return ((Math.PI * L - ship.initRadius - computeRadius("star", this.game[ship.from].count))
 							/ this.options.shipSpeed * 1000);
 	}
 };
 
+Engine.prototype.midTripDuration = function (id) {
+	var ship = this.game[id];
+	var L = distance(this.game[ship.from], this.game[ship.to]);
+	
+	return ((Math.PI * L * 0.5 - ship.initRadius) / this.options.shipSpeed * 1000);
+}
+
 // Check if the trip takes more time than it should
 Engine.prototype.finished = function (id) {
 	return (this.serverTimestamp() - this.game[id].timestamp >= this.tripDuration(id));
+};
+
+// Check if the circular ship is at mid trip
+Engine.prototype.midTrip = function (id) {
+	var Dt = this.serverTimestamp() - this.game[id].timestamp;
+	return (Dt >= this.midTripDuration(id) && this.game[id].count == 1);
 };
 
 // Updates the game
@@ -46,40 +60,70 @@ Engine.prototype.update = function () {
 	time = this.serverTimestamp();
 
 	for (var i in this.game) {
-		if (this.game[i].type === "ship" && this.finished(i)) {
+		// Loot ak ships
+		if (this.game[i].type === "ship") {
 			var ship = this.game[i];
 			var dest = this.game[ship.to];
 
-			switch (dest.type) {
-				case "star":
+			// Check for midtrip toward satellites
+			if (dest.type == "satellite" && this.midTrip(i)) {
+				ship.count += dest.count;
+				dest.visible = false;
+			}
 
-					if (ship.id === dest.id) {
-						// The ship is for reinforcemnt
-						dest.count += ship.count;
-					} else {
-						// The ship attacks
-						newCount = dest.count - ship.count;
-						
-						if (newCount >= 0) {
-							// Not enough to convert
-							dest.count = newCount;
+			// Check for end of ship trips
+			if (this.finished(i)) {
+
+				switch (dest.type) {
+					case "star":
+
+						if (ship.id === dest.id) {
+							// The ship is for reinforcemnt
+							dest.count += ship.count;
 						} else {
-							// The star is conquered
-							dest.count = -newCount - 1;
-							dest.id = ship.id;
-						}
-					}
-					this.del(i);
-					break;
+							// The ship attacks
+							newCount = dest.count - ship.count;
 
-				case "satellite":
-					this.game[i].ts = this.ETA(i);
-					this.game[i].to = game[i].from;
-					this.game[i].from = dest;
-					this.game[i].count += game[dest].count;
-					delete this.game[dest];
+							if (newCount >= 0) {
+								// Not enough to convert
+								dest.count = newCount;
+							} else {
+								// The star is conquered
+								dest.count = -newCount - 1;
+								dest.id = ship.id;
+							}
+						}
+
+						this.del(i);
+						break;
+
+					case "satellite":
+						var fromStar = this.game[ship.from];
+
+						if (ship.id === fromStar.id) {
+							// The ship returns the satellite
+							fromStar.count += ship.count;
+						} else {
+							// The ship attacks
+							newCount = Math.floor(fromStar.count - ship.count * 0.5);
+
+							if (newCount >= 0) {
+								// Not enough to convert
+								fromStar.count = newCount;
+							} else {
+								// The star is conquered
+								fromStar.count = -newCount - 1;
+								fromStar.id = ship.id;
+							}
+						}
+
+						this.del(i);
+						break;
+				}
 			}
 		}
+		
+		// TODO automation list
 	}
 };
 
@@ -177,7 +221,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, cal
 		}
 
 		if (nearest !== -1) {
-			this.move(playerId, nearest, satelliteId, 0, callback);
+			this.move(playerId, nearest, satelliteId, 1, callback);
 		} else {
 			callback(false);
 		}
@@ -263,7 +307,8 @@ Engine.prototype.addSatellite = function (x, y, count, callback) {
 				type: "satellite",
 				x: x,
 				y: y,
-				count: count
+				count: count,
+				visible: true
 			};
 			callback(res.id);
 		} else {

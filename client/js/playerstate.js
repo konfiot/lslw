@@ -58,13 +58,15 @@ PlayerState.prototype.update = function () {
 	this.hoveredSatelliteId = -1;
 
 	for (var j in engine.game) {
-		if (engine.game[j].type == "star" || engine.game[j].type == "satellite") {
-			var radius2 =	Math.pow(mouse.worldX - engine.game[j].x, 2) +
-							Math.pow(mouse.worldY - engine.game[j].y, 2);
+		var obj = engine.game[j];
 
-			if (radius2 < Math.pow(computeRadius(engine.game[j].type, engine.game[j].count) * 1.5 + 10 / playerstate.scale, 2)) {
+		if (obj.type == "star" || (obj.type == "satellite" && obj.visible)) {
+			var radius2 =	Math.pow(mouse.worldX - obj.x, 2) +
+							Math.pow(mouse.worldY - obj.y, 2);
 
-				if (engine.game[j].type == "star") {
+			if (radius2 < Math.pow(computeRadius(obj.type, obj.count) * 1.5 + 10 / playerstate.scale, 2)) {
+
+				if (obj.type == "star") {
 					this.hoveredStarId = j;
 					break;
 				} else {
@@ -135,6 +137,14 @@ PlayerState.prototype.update = function () {
 
 		this.newSelection(-1);
 		this.clickedStar = -1;
+	}
+	
+	// Update clicked satellites
+	for (var k = this.clickedSatellites.length- 1; k >= 0; k--) {
+
+		if (!engine.game[this.clickedSatellites[k]].visible) {
+			this.clickedSatellites.splice(k, 1);
+		}
 	}
 };
 
