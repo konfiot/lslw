@@ -114,8 +114,10 @@ PlayerState.prototype.update = function () {
 	if (!mouse.isMouseDown) {
 
 		if (this.dragging && this.hoveredStarId !== -1 &&
-			this.selectedStar !== -1 && this.hoveredStarId != this.selectedStar) {
+			this.selectedStar !== -1 && this.hoveredStarId != this.selectedStar &&
+			engine.possibleTrip(this.selectedStar, this.hoveredStarId)) {
 			engine.game[this.id].automation.push([this.selectedStar, this.hoveredStarId]);
+			// TODO remove other connexions, remove auto
 			this.newSelection(-1);
 			this.clickedStar  = -1;
 		}
