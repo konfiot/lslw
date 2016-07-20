@@ -23,25 +23,22 @@ Engine.prototype.tripDuration = function (id) {
 	var dest = ship.to;
 
 	var L = distance(this.game[ship.from], this.game[ship.to]);
-
-	switch (this.game[dest].type) {
-		case "star":
-			
-			return ((L - ship.initRadius - computeRadius("star", this.game[ship.to].count))
-							/ this.options.shipSpeed * 1000);
-
-		case "satellite":
-
-			return ((Math.PI * L - ship.initRadius - computeRadius("star", this.game[ship.from].count))
-							/ this.options.shipSpeed * 1000);
+	
+	if (this.game[dest].type === "satellite") {
+		L *= Math.PI;
+		dest = ship.from;
 	}
+	
+	return ((L - ship.initRadius - computeRadius("star", this.game[dest].count))
+				/ this.options.shipSpeed * 1000);
 };
 
+// Returns the time required for a ship to reach the satellite
 Engine.prototype.midTripDuration = function (id) {
 	var ship = this.game[id];
 	var L = distance(this.game[ship.from], this.game[ship.to]);
 	
-	return ((Math.PI * L * 0.5 - ship.initRadius) / this.options.shipSpeed * 1000);
+	return (Math.PI * L * 0.5 - ship.initRadius) / this.options.shipSpeed * 1000;
 }
 
 // Check if the trip takes more time than it should
@@ -51,8 +48,10 @@ Engine.prototype.finished = function (id) {
 
 // Check if the circular ship is at mid trip
 Engine.prototype.midTrip = function (id) {
-	var Dt = this.serverTimestamp() - this.game[id].timestamp;
-	return (Dt >= this.midTripDuration(id) && this.game[id].count == 1);
+
+	return (this.game[this.game[id].to].type === "satellite" &&
+			this.serverTimestamp() - this.game[id].timestamp >= this.midTripDuration(id) &&
+			this.game[id].count == 1);
 };
 
 // Updates the game
@@ -60,70 +59,61 @@ Engine.prototype.update = function () {
 	time = this.serverTimestamp();
 
 	for (var i in this.game) {
-		// Loot ak ships
-		if (this.game[i].type === "ship") {
-			var ship = this.game[i];
-			var dest = this.game[ship.to];
-
-			// Check for midtrip toward satellites
-			if (dest.type == "satellite" && this.midTrip(i)) {
-				ship.count += dest.count;
-				dest.visible = false;
-			}
-
-			// Check for end of ship trips
-			if (this.finished(i)) {
-
-				switch (dest.type) {
-					case "star":
-
-						if (ship.id === dest.id) {
-							// The ship is for reinforcemnt
-							dest.count += ship.count;
-						} else {
-							// The ship attacks
-							newCount = dest.count - ship.count;
-
-							if (newCount >= 0) {
-								// Not enough to convert
-								dest.count = newCount;
-							} else {
-								// The star is conquered
-								dest.count = -newCount - 1;
-								dest.id = ship.id;
-							}
-						}
-
-						this.del(i);
-						break;
-
-					case "satellite":
-						var fromStar = this.game[ship.from];
-
-						if (ship.id === fromStar.id) {
-							// The ship returns the satellite
-							fromStar.count += ship.count;
-						} else {
-							// The ship attacks
-							newCount = Math.floor(fromStar.count - ship.count * 0.5);
-
-							if (newCount >= 0) {
-								// Not enough to convert
-								fromStar.count = newCount;
-							} else {
-								// The star is conquered
-								fromStar.count = -newCount - 1;
-								fromStar.id = ship.id;
-							}
-						}
-
-						this.del(i);
-						break;
-				}
-			}
-		}
+		var obj = this.game[i];
 		
-		// TODO automation list
+		switch (obj.type) {
+			case "ship":
+				var dest = this.game[obj.to];
+				
+				if (this.finished(i)) {
+					// The ship arrived
+
+					if (dest.type == "satellite") {
+						dest = this.game[obj.from];
+						obj.count = Math.floor(obj.count * 0.5);
+						break;
+					}
+
+					if (obj.id === dest.id) {
+						// The ship is for reinforcemnt
+						dest.count += obj.count;
+					} else {
+						newCount = dest.count - obj.count;
+
+						if (newCount >= 0) {
+							// Not enough to convert
+							dest.count = newCount;
+						} else {
+							// The star is conquered
+							dest.count = -newCount - 1;
+							dest.id = obj.id;
+						}
+					}
+
+					this.del(i);
+
+				} else if (this.midTrip(i)) {
+					// The ship is at midtrip toward satellites
+					obj.count += dest.count;
+					dest.visible = false;
+				}
+
+				break;
+
+			case "player":
+
+				for (var s = 0; s < obj.automation.length; s++) {
+					var c = this.game[obj.automation[s][0]].count;
+
+					// Only send if the star count is sup to 5
+					if (c >= 5) {
+						this.move(i, obj.automation[s][0],
+									obj.automation[s][1],
+									c);
+					}
+				}
+				break;
+		}
 	}
 };
 
