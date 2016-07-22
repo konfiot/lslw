@@ -1,7 +1,7 @@
 {
-  "name": "Gravity",
+  "name": "Listar",
   "version": "0.1.0",
-  "description": "The gravity game",
+  "description": "Listar MMO game",
   "dependencies": {
     "async": "*",
     "html-entities": "*",
