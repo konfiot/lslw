@@ -9,6 +9,7 @@ module.exports = function (grunt) {
 				src: [
 					"common/engine.js",
 					"client/js/DummyIo.js",
+					"client/js/io.js",
 					"client/js/global.js",
 					"client/js/delaunay.js",
 					"client/js/display.js",
@@ -83,7 +84,7 @@ module.exports = function (grunt) {
 			dist: {
 				options: {
 					patterns: [{
-						match: "URL_SERVER",
+						match: "SERVER_URL",
 						replacement: process.env.SERVER || ""
 					},
 					{

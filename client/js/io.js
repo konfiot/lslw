@@ -10,7 +10,7 @@ function makeid () {
 }
 
 function Io () {
-	this.ws = new WebSocket("SERVER_URL");
+	this.ws = new WebSocket("@@SERVER_URL");
 	this.awaiting = {};
 	this.upCb = function () {};
 	this.delCb = function () {};
