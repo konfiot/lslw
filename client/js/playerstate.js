@@ -140,9 +140,9 @@ PlayerState.prototype.update = function () {
 		this.newSelection(-1);
 		this.clickedStar = -1;
 	}
-	
+
 	// Update clicked satellites
-	for (var k = this.clickedSatellites.length- 1; k >= 0; k--) {
+	for (var k = this.clickedSatellites.length - 1; k >= 0; k--) {
 
 		if (!engine.game[this.clickedSatellites[k]].visible) {
 			this.clickedSatellites.splice(k, 1);

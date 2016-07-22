@@ -30,9 +30,11 @@ function Io () {
 			case "player":
 				this.awaiting[msg.id]({id: msg.id});
 				break;
+
 			case "del":
 				this.delCb(msg.id);
 				break;
+
 			case "up":
 				this.upCb(msg.id, msg.data);
 				break;

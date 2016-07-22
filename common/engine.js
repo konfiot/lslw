@@ -23,23 +23,22 @@ Engine.prototype.tripDuration = function (id) {
 	var dest = ship.to;
 
 	var L = distance(this.game[ship.from], this.game[ship.to]);
-	
+
 	if (this.game[dest].type === "satellite") {
 		L *= Math.PI;
 		dest = ship.from;
 	}
-	
-	return ((L - ship.initRadius - computeRadius("star", this.game[dest].count))
-				/ this.options.shipSpeed * 1000);
+
+	return ((L - ship.initRadius - computeRadius("star", this.game[dest].count)) / this.options.shipSpeed * 1000);
 };
 
 // Returns the time required for a ship to reach the satellite
 Engine.prototype.midTripDuration = function (id) {
 	var ship = this.game[id];
 	var L = distance(this.game[ship.from], this.game[ship.to]);
-	
+
 	return (Math.PI * L * 0.5 - ship.initRadius) / this.options.shipSpeed * 1000;
-}
+};
 
 // Check if the trip takes more time than it should
 Engine.prototype.finished = function (id) {
@@ -48,7 +47,6 @@ Engine.prototype.finished = function (id) {
 
 // Check if the circular ship is at mid trip
 Engine.prototype.midTrip = function (id) {
-
 	return (this.game[this.game[id].to].type === "satellite" &&
 			this.serverTimestamp() - this.game[id].timestamp >= this.midTripDuration(id) &&
 			this.game[id].count == 1);
@@ -60,11 +58,11 @@ Engine.prototype.update = function () {
 
 	for (var i in this.game) {
 		var obj = this.game[i];
-		
+
 		switch (obj.type) {
 			case "ship":
 				var dest = this.game[obj.to];
-				
+
 				if (this.finished(i)) {
 					// The ship arrived
 

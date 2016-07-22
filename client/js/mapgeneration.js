@@ -16,6 +16,7 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var n = 0;
 	var x, y;
 	var distMin2 = Math.pow(engine.options.minDistBetweenStars, 2);
+	var r2;
 
 	while (n < nPoints) {
 		x = size * (Math.random() * 2 - 1);
@@ -47,7 +48,7 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	}
 
 	edgeSet = removeDoubleEdges(edgeSet);
-	
+
 	// Remove some points
 	var idToRemoveList = [];
 
@@ -55,7 +56,7 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 
 	// Forming a circle
 	for (var s = 0; s < pointSet.length; s++) {
-		var r2 = Math.pow(pointSet[s].x, 2) + Math.pow(pointSet[s].y, 2);
+		r2 = Math.pow(pointSet[s].x, 2) + Math.pow(pointSet[s].y, 2);
 
 		if (r2 > radius2) {
 			idToRemoveList.push(s);
@@ -64,12 +65,12 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 
 	var nPointsToRemove = parseInt(sparsity * pointSet.length);
 	var len = pointSet.length;
-	
+
 	for (var q = 0; q < nPointsToRemove; q++) {
 		idToRemoveList.push(parseInt(Math.random() * len));
 	}
-	
-	idToRemoveList.sort(function (a, b) { return b - a });
+
+	idToRemoveList.sort(function (a, b) { return b - a; });
 
 	// Remove the vertices and edges
 	for (var p = 0; p < idToRemoveList.length; p++) {
@@ -111,11 +112,11 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var createdSatellites = []; // x, y, count
 
 	for (var i = 0; i < nSat; i++) {
-		var x = parseInt(size * (Math.random() * 2 - 1));
-		var y = parseInt(size * (Math.random() * 2 - 1));
+		x = parseInt(size * (Math.random() * 2 - 1));
+		y = parseInt(size * (Math.random() * 2 - 1));
 		var count = 2 + parseInt(Math.random() * 3);
 
-		for (var s in engine.game) {
+		for (s in engine.game) {
 
 			// Iteration over stars to find if the future satellite is not too close
 			if (engine.game[s].type === "star") {
@@ -136,7 +137,7 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 		createdSatellites.push([x, y, count]);
 	}
 
-	for (var j = 0; j < createdSatellites.length; j++) {
+	for (j = 0; j < createdSatellites.length; j++) {
 		engine.addSatellite(createdSatellites[j][0],
 							createdSatellites[j][1],
 							createdSatellites[j][2]);

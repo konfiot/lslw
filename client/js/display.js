@@ -2,11 +2,11 @@
 The main display. Iterate through the game elements
 */
 // Offscreen rendering //
-var offSateliteCanvas = document.createElement('canvas');
-var maxRadSat = 26
+var offSateliteCanvas = document.createElement("canvas");
+var maxRadSat = 26;
 offSateliteCanvas.width = 6 * maxRadSat;
 offSateliteCanvas.height = 2 * maxRadSat;
-var offSateliteCtx = offSateliteCanvas.getContext('2d');  
+var offSateliteCtx = offSateliteCanvas.getContext("2d");
 
 // Satellites
 offSateliteCtx.fillStyle = whiteColor;
@@ -36,7 +36,7 @@ Display = function () {
 		context[layer].translate(canvas[layer].width / 2, canvas[layer].height / 2);
 		context[layer].scale(playerstate.scale, playerstate.scale);
 	}
-	
+
 	// Draw the space
 	space.draw();
 
@@ -100,7 +100,7 @@ Display = function () {
 					translate(obj.x, obj.y, ctx);
 					ctx.drawImage(offSateliteCanvas,
 								maxRadSat * 2 * (obj.count - 2), 0, 2 * maxRadSat, 2 * maxRadSat,
-								-maxRadSat,-maxRadSat,2 * maxRadSat, 2 * maxRadSat);
+								-maxRadSat, -maxRadSat, 2 * maxRadSat, 2 * maxRadSat);
 
 					ctx.restore();
 				}
@@ -144,10 +144,10 @@ Display = function () {
 						var alpha = crossedDistance / L * 2;
 						var gamma = Math.PI * 0.5 + theta - alpha;
 						var epsilon = theta + (Math.PI - alpha) * 0.5;
-						r = L * Math.sin(alpha / 2);
+						var r2 = L * Math.sin(alpha / 2);
 
-						x = engine.game[obj.from].x + r * Math.cos(epsilon);
-						y = engine.game[obj.from].y + r * Math.sin(epsilon);
+						x = engine.game[obj.from].x + r2 * Math.cos(epsilon);
+						y = engine.game[obj.from].y + r2 * Math.sin(epsilon);
 
 						drawShip(obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite);
 					}
