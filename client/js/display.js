@@ -4,6 +4,7 @@ The main display. Iterate through the game elements
 // Offscreen rendering //
 var offSateliteCanvas = document.createElement("canvas");
 var maxRadSat = 26;
+var maxRadStar = 50;
 offSateliteCanvas.width = 6 * maxRadSat;
 offSateliteCanvas.height = 2 * maxRadSat;
 var offSateliteCtx = offSateliteCanvas.getContext("2d");
@@ -22,6 +23,54 @@ for (var a = 0; a < 3; a++) {
 	offSateliteCtx.arc(maxRadSat * (2 * a + 1), maxRadSat, radius, 0, Math.PI * 2);
 	offSateliteCtx.fill();
 	offSateliteCtx.stroke();
+}
+
+var offPlayerCanvas = {}
+
+for (var b = 0; b < playerIdList.length; b++) {
+	addNewPlayerBuffer();
+}
+
+// Add a player canvas with the stars from 0 to 9
+addNewPlayerBuffer = function () {
+	var offPlayerCanvas = document.createElement("canvas");
+	offPlayerCanvas.width = 20 * maxRadStar;
+	offPlayerCanvas.height = 2 * maxRadStar;
+	var offPlayerCtx = offSateliteCanvas.getContext("2d");
+
+	for (var s = 0; s < 10; s++) {
+		
+	}
+}
+
+drawStar = function (count) {
+	ctx.fillStyle = engine.game[obj.id].color[0];
+	ctx.strokeStyle = engine.game[obj.id].color[1];
+	ctx.lineWidth = 6;
+	var radius = computeRadius("star", obj.count);
+
+	ctx.beginPath();
+	ctx.arc(0, 0, radius, 0, Math.PI * 2);
+	ctx.fill();
+	ctx.stroke();
+	ctx.closePath();
+
+	// Reflection effect
+	ctx.fillStyle = whiteTransparentColor;
+	var r = radius - 9;
+
+	ctx.beginPath();
+	ctx.arc(0, 0, r, Math.PI, 0);
+	ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
+	ctx.fill();
+	ctx.closePath();
+
+	// Write the score
+	ctx.font = "lighter " + String(parseInt(radius)) + "px arial";
+	ctx.fillStyle = whiteSemiColor;
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillText(obj.count, 0, 5);
 }
 
 Display = function () {
@@ -45,7 +94,7 @@ Display = function () {
 
 	// Draw the ingame elements
 	var obj = null;
-
+	
 	for (var i in engine.game) {
 		obj = engine.game[i];
 
@@ -95,14 +144,13 @@ Display = function () {
 
 				if (obj.visible && isOnScreen(obj.x, obj.y)) {
 					ctx = context.stellar;
-					ctx.save();
-
-					translate(obj.x, obj.y, ctx);
+					
+					var posX = -playerstate.centerX + obj.x - maxRadSat;
+				       	var posY = -playerstate.centerY + obj.y - maxRadSat;
 					ctx.drawImage(offSateliteCanvas,
 								maxRadSat * 2 * (obj.count - 2), 0, 2 * maxRadSat, 2 * maxRadSat,
-								-maxRadSat, -maxRadSat, 2 * maxRadSat, 2 * maxRadSat);
+								posX, posY, 2 * maxRadSat, 2 * maxRadSat);
 
-					ctx.restore();
 				}
 
 				break;
@@ -166,12 +214,13 @@ Display = function () {
 				translate(s1.x, s1.y, ctx);
 				ctx.setLineDash([20, 8]);
 
-				ctx.lineWidth = 3;
 
-				if (s1.id == s2.id) {
+				if (s1.id != playerIdList[0] && s1.id == s2.id) {
+					ctx.lineWidth = 5;
 					ctx.strokeStyle = engine.game[s1.id].color[0];
 				} else {
-					ctx.strokeStyle = whiteColor;
+					ctx.lineWidth = 3;
+					ctx.strokeStyle = whiteTransparentColor;
 				}
 
 				ctx.beginPath();

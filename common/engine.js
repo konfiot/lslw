@@ -66,10 +66,9 @@ Engine.prototype.update = function () {
 				if (this.finished(i)) {
 					// The ship arrived
 
-					if (dest.type == "satellite") {
+					if (dest.type === "satellite") {
 						dest = this.game[obj.from];
 						obj.count = Math.floor(obj.count * 0.5);
-						break;
 					}
 
 					if (obj.id === dest.id) {

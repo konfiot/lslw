@@ -19,6 +19,7 @@ var density = 0.5;
 var sparsity = 0.1;
 delaunayMapGeneration(nPoints, density, sparsity);
 
+
 // Connect events
 document.addEventListener("mousedown", downHandler, false);
 document.addEventListener("mouseup", upHandler, false);
