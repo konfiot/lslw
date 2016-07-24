@@ -3,7 +3,7 @@ Draws the information that only the playerstate can see
 */
 playerDisplay = function () {
 	// Draw on the ships layer
-	ctx = context.ships;
+	ctx = offContext.ships;
 
 	// Draws an aura around the hovered star
 	if (playerstate.hoveredStarId !== -1) {

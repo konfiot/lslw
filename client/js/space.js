@@ -9,8 +9,8 @@ function SpaceBackground(n) {
 	for (var i = 0; i < this.nDistantStars; i++) {
 		var distantFactor = Math.random() * 0.1 + 0.05;
 		var radius = Math.random() * 3 + 4;
-		var x = (Math.random() * 5 - 2.5) * canvas.background.width;
-		var y = (Math.random() * 5 - 2.5) * canvas.background.height;
+		var x = (Math.random() * 5 - 2.5) * visibleCanvas.background.width;
+		var y = (Math.random() * 5 - 2.5) * visibleCanvas.background.height;
 		this.distantStars.push([x, y, radius, distantFactor]);
 	}
 }
@@ -33,8 +33,8 @@ SpaceBackground.prototype.createOutboundDistantStar = function () {
 		}
 	}
 
-	var x = (_x - 1.5) * canvas.background.width / playerstate.scale + playerstate.centerX * distantFactor;
-	var y = (_y - 1.5) * canvas.background.height / playerstate.scale + playerstate.centerY * distantFactor;
+	var x = (_x - 1.5) * visibleCanvas.background.width / playerstate.scale + playerstate.centerX * distantFactor;
+	var y = (_y - 1.5) * visibleCanvas.background.height / playerstate.scale + playerstate.centerY * distantFactor;
 
 	// Radius of the distant star
 	var radius = Math.random() * 3 + 4;
@@ -47,19 +47,19 @@ SpaceBackground.prototype.draw = function () {
 	var offScreenStars = [];
 
 	// If inbound, draw. Else, mark the star
-	context.background.save();
+	visibleContext.background.save();
 
 	if (playerstate.scale > 0.50) {
 		// Normal color
-		context.background.fillStyle = "rgb(65, 15, 115)";
+		visibleContext.background.fillStyle = "rgb(65, 15, 115)";
 	} else if (playerstate.scale < 0.30) {
 		// Invisible
-		context.background.fillStyle = backgroundColor;
+		visibleContext.background.fillStyle = backgroundColor;
 	} else {
 		// Fade
 		var t = (playerstate.scale - 0.3) / 0.2;
 
-		context.background.fillStyle = "rgb(" +	parseInt(30 + 35 * t) + "," +
+		visibleContext.background.fillStyle = "rgb(" +	parseInt(30 + 35 * t) + "," +
 											parseInt(8 + 7 * t) + "," +
 											parseInt(54 + 61 * t) + ")";
 	}
@@ -69,19 +69,19 @@ SpaceBackground.prototype.draw = function () {
 		var x = this.distantStars[i][0] - playerstate.centerX * distantFactor;
 		var y = this.distantStars[i][1] - playerstate.centerY * distantFactor;
 
-		if (x < canvas.background.width * 1.5 &&
-			x > -canvas.background.width * 1.5 &&
-			y > -canvas.background.height * 1.5 &&
-			y < canvas.background.height * 1.5) {
+		if (x < visibleCanvas.background.width * 1.5 &&
+			x > -visibleCanvas.background.width * 1.5 &&
+			y > -visibleCanvas.background.height * 1.5 &&
+			y < visibleCanvas.background.height * 1.5) {
 
-			context.background.beginPath();
-			context.background.arc(x, y, this.distantStars[i][2], 0, Math.PI * 2);
-			context.background.fill();
+			visibleContext.background.beginPath();
+			visibleContext.background.arc(x, y, this.distantStars[i][2], 0, Math.PI * 2);
+			visibleContext.background.fill();
 		} else {
 			offScreenStars.push(i);
 		}
 	}
-	context.background.restore();
+	visibleContext.background.restore();
 
 	// Replace outboud stars with others
 	for (var j = 0; j < offScreenStars.length; j++) {

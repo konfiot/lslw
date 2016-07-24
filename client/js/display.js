@@ -1,56 +1,18 @@
 /*
 The main display. Iterate through the game elements
 */
-// Offscreen rendering //
-var offSateliteCanvas = document.createElement("canvas");
-var maxRadSat = 26;
-var maxRadStar = 50;
-offSateliteCanvas.width = 6 * maxRadSat;
-offSateliteCanvas.height = 2 * maxRadSat;
-var offSateliteCtx = offSateliteCanvas.getContext("2d");
 
-// Satellites
-offSateliteCtx.fillStyle = whiteColor;
-offSateliteCtx.shadowColor = whiteColor;
-offSateliteCtx.shadowBlur = 5;
-offSateliteCtx.strokeStyle = whiteSemiColor;
-offSateliteCtx.lineWidth = 4;
+// Draws the star on the starContext
+drawStar = function (obj) {
+	ctx = offContext.stellar;
 
-for (var a = 0; a < 3; a++) {
-	var radius = 6 + 2 * a;
-
-	offSateliteCtx.beginPath();
-	offSateliteCtx.arc(maxRadSat * (2 * a + 1), maxRadSat, radius, 0, Math.PI * 2);
-	offSateliteCtx.fill();
-	offSateliteCtx.stroke();
-}
-
-var offPlayerCanvas = {}
-
-for (var b = 0; b < playerIdList.length; b++) {
-	addNewPlayerBuffer();
-}
-
-// Add a player canvas with the stars from 0 to 9
-addNewPlayerBuffer = function () {
-	var offPlayerCanvas = document.createElement("canvas");
-	offPlayerCanvas.width = 20 * maxRadStar;
-	offPlayerCanvas.height = 2 * maxRadStar;
-	var offPlayerCtx = offSateliteCanvas.getContext("2d");
-
-	for (var s = 0; s < 10; s++) {
-		
-	}
-}
-
-drawStar = function (count) {
 	ctx.fillStyle = engine.game[obj.id].color[0];
 	ctx.strokeStyle = engine.game[obj.id].color[1];
 	ctx.lineWidth = 6;
 	var radius = computeRadius("star", obj.count);
 
 	ctx.beginPath();
-	ctx.arc(0, 0, radius, 0, Math.PI * 2);
+	ctx.arc(obj.x, obj.y, radius, 0, Math.PI * 2);
 	ctx.fill();
 	ctx.stroke();
 	ctx.closePath();
@@ -60,8 +22,8 @@ drawStar = function (count) {
 	var r = radius - 9;
 
 	ctx.beginPath();
-	ctx.arc(0, 0, r, Math.PI, 0);
-	ctx.arc(0, -Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
+	ctx.arc(obj.x, obj.y, r, Math.PI, 0);
+	ctx.arc(obj.x, obj.y - Math.sqrt(3) * r, 2 * r, Math.PI / 3.0, 2 * Math.PI / 3.0);
 	ctx.fill();
 	ctx.closePath();
 
@@ -70,13 +32,13 @@ drawStar = function (count) {
 	ctx.fillStyle = whiteSemiColor;
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
-	ctx.fillText(obj.count, 0, 5);
+	ctx.fillText(obj.count, obj.x, obj.y + 5);
 }
 
 Display = function () {
 	// Setup the scene
 	var s = Math.min(playerstate.scale, 1.0);
-
+	/*
 	for (var layer in context) {
 		context[layer].clearRect(0, 0, canvas[layer].width / s, canvas[layer].height / s);
 
@@ -84,14 +46,91 @@ Display = function () {
 
 		context[layer].translate(canvas[layer].width / 2, canvas[layer].height / 2);
 		context[layer].scale(playerstate.scale, playerstate.scale);
-	}
-
-	// Draw the space
+	}*/
+	var viewportWidth = visibleCanvas.foreground.width;
+	var viewportHeight = visibleCanvas.foreground.height;
+	visibleContext.background.clearRect(0, 0, viewportWidth, viewportHeight);
+	visibleContext.foreground.clearRect(0, 0, viewportWidth, viewportHeight);
+	
+	// Draw the space TODO
 	space.draw();
 
 	// Draw what the player should see
 	playerDisplay();
+	
+	var toModify = [];
+	var tmpGameState = {};
+	var obj, oldObj = null;
+	
+	for (var i in engine.game) {
+		obj = engine.game[i];
+		
+		if (playerstate.oldGameState[i] !== undefined) {
+			oldObj = playerstate.oldGameState[i];
 
+			// TODO test if on screen first
+			switch (engine.game[i].type) {
+				case "star":
+					
+					if (obj.id !== oldObj.id ||
+						obj.count !== oldObj.count) {
+						toModify.push(i);
+					}
+					
+					break;
+				/*
+				case "satellite":
+				
+					if (obj.visible !== oldObj.visible) {
+						toModify.push(i);
+					}
+					
+					break;*/
+					
+				case "link":
+				
+					if (obj.from !== oldObj.from ||
+						obj.to !== oldObj.to) {
+						toModify.push(i);
+					}
+					
+					break;
+			}
+		} else {
+			toModify.push(i);
+		}
+		
+		tmpGameState[i] = obj;
+	}
+	
+	playerstate.oldGameState = tmpGameState;
+	
+	// Update the offscreen canvases
+	for (var m = 0; m < toModify.length; m++) {
+		obj = engine.game[toModify[m]];
+		switch (obj.type) {
+			case "star":
+				
+				var radiusToClear = computeRadius("star", obj.count) + 10;
+			
+				offContext.stellar.clearRect(obj.x -radiusToClear, obj.y - radiusToClear,
+								2 * radiusToClear, 2 * radiusToClear);
+				drawStar(obj);
+			
+				break;
+		}
+	}
+	
+	// Blit the offscreen canvases onto the visible one
+	var posX = -parseInt(playerstate.centerX + viewportWidth * 0.5);
+       	var posY = -parseInt(playerstate.centerY + viewportHeight * 0.5);
+	
+	// TODO integrate scale
+	visibleContext.foreground.drawImage(offCanvas.stellar,
+				posX, posY, viewportWidth, viewportHeight,
+				0, 0, viewportWidth, viewportHeight);
+	
+/*
 	// Draw the ingame elements
 	var obj = null;
 	
@@ -236,12 +275,12 @@ Display = function () {
 
 	for (layer in context) {
 		context[layer].restore();
-	}
+	}*/
 };
 
 // Draw ships, works for different size : ships between stars or to get points
 function drawShip(id, x, y, theta, count, factor, highlight) {
-	context.ships.save();
+	offContext.ships.save();
 
 	var c = Math.cos(theta);
 	var s = Math.sin(theta);

@@ -8,6 +8,7 @@ module.exports = function (grunt) {
 			js: {
 				src: [
 					"common/engine.js",
+					"client/js/canvas.js",
 					"client/js/DummyIo.js",
 					"client/js/io.js",
 					"client/js/global.js",

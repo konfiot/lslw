@@ -21,6 +21,8 @@ function PlayerState(id) {
 
 	// [star number, start time, progression]
 	this.selectionAnimation = [];
+
+	this.oldGameState = {};
 }
 
 PlayerState.prototype.newSelection = function (starId) {

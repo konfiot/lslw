@@ -18,8 +18,8 @@ function distance(a, b) {
 
 // Compute the position of the mouse in world coordinates
 worldMousePosition = function () {
-	mouse.worldX = playerstate.centerX + (mouse.x - canvas.background.width / 2) / playerstate.scale;
-	mouse.worldY = playerstate.centerY + (mouse.y - canvas.background.height / 2) / playerstate.scale;
+	mouse.worldX = playerstate.centerX + (mouse.x - visibleCanvas.background.width / 2) / playerstate.scale;
+	mouse.worldY = playerstate.centerY + (mouse.y - visibleCanvas.background.height / 2) / playerstate.scale;
 };
 
 function generateColor(n) {
