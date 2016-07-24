@@ -3,6 +3,7 @@ Map generation using Delaunay Triangulation
 */
 delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var size = Math.sqrt(nPoints) * engine.options.minDistBetweenStars * (1 - density);
+	size = parseInt(gameConstants.mapSize * 0.5);
 	var nSat = parseInt(nPoints * 1.0);
 
 	var pointSet = [];

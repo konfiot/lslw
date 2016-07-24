@@ -1,5 +1,5 @@
 var gameConstants = {
-	mapSize : 1000,
+	mapSize : 10000,
 	minDistBetweenStars : 200,
 	shipSpeed : 70, // px/sec
 	range : 250,

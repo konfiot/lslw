@@ -27,11 +27,15 @@ var canvasMarginTop =  gameWindow.top;
 
 // Offscreen canvas
 var offCanvas = {
+	links : document.createElement("canvas"),
+	player : document.createElement("canvas"),
 	ships : document.createElement("canvas"),
 	stellar : document.createElement("canvas")
 }
 
 var offContext = {
+	links : offCanvas.links.getContext("2d"),
+	player : offCanvas.player.getContext("2d"),
 	ships : offCanvas.ships.getContext("2d"),
 	stellar : offCanvas.stellar.getContext("2d")
 }

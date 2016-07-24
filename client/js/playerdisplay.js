@@ -3,7 +3,7 @@ Draws the information that only the playerstate can see
 */
 playerDisplay = function () {
 	// Draw on the ships layer
-	ctx = offContext.ships;
+	ctx = offContext.player;
 
 	// Draws an aura around the hovered star
 	if (playerstate.hoveredStarId !== -1) {
@@ -11,13 +11,12 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(hStar.x, hStar.y, ctx);
 		ctx.lineWidth = 6;
 		ctx.shadowColor = engine.game[hStar.id].color[1];
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeRadius("star", hStar.count), 0, Math.PI * 2);
+		ctx.arc(hStar.x, hStar.y, computeRadius("star", hStar.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -30,14 +29,13 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(hSat.x, hSat.y, ctx);
 		ctx.lineWidth = 6;
 		ctx.strokeStyle = whiteColor;
 		ctx.shadowColor = whiteColor;
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeRadius("satellite", hSat.count), 0, Math.PI * 2);
+		ctx.arc(hSat.x, hSat.y, computeRadius("satellite", hSat.count), 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
