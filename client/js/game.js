@@ -29,7 +29,7 @@ document.addEventListener("mousemove", moveHandler, false);
 
 // Load Graphics
 for (var i in engine.game) {
-	drawDisplayClallback(i)
+	drawDisplayClallback(i);
 }
 
 time = null;

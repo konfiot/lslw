@@ -64,16 +64,18 @@ Engine.prototype.update = function (drawCallback) {
 				var dest = this.game[obj.to];
 
 				if (this.finished(i)) {
+					var isSat = false;
+					var newCount = dest.count - obj.count;
 					// The ship arrived
 					if (dest.type === "satellite") {
 						dest = this.game[obj.from];
+						newCount = dest.count - Math.floor(obj.count * 0.5);
 					}
 
 					if (obj.id === dest.id) {
 						// The ship is for reinforcemnt
 						dest.count += obj.count;
 					} else {
-						newCount = dest.count - Math.floor(obj.count * 0.5);;
 
 						if (newCount >= 0) {
 							// Not enough to convert
@@ -128,7 +130,7 @@ Engine.prototype.changeStarId = function (starId, playerId, drawCallback) {
 			drawCallback(i);
 		}
 	}
-}
+};
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
 Engine.prototype.getNearestStar = function (playerId, satelliteId, countTest) {
@@ -261,7 +263,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback, clear
 
 		// Something needs to be cleared TODO calback not working
 		drawDisplayClallback(fromId);
-		//clearCallback(fromId);
+		// clearCallback(fromId);
 	}
 };
 

@@ -7,11 +7,11 @@ module.exports = function (grunt) {
 		concat: {
 			js: {
 				src: [
+					"client/js/global.js",
 					"common/engine.js",
 					"client/js/canvas.js",
 					"client/js/DummyIo.js",
 					"client/js/io.js",
-					"client/js/global.js",
 					"client/js/delaunay.js",
 					"client/js/display.js",
 					"client/js/mouse.js",

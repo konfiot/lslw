@@ -142,15 +142,15 @@ clearPlayerCallback = function () {
 		clearArround(obj.x, obj.y, radius);
 	}
 
-	for (var i = 0; i < playerstate.clickedSatellites.length; i++) {
+	for (i = 0; i < playerstate.clickedSatellites.length; i++) {
 		obj = engine.game[playerstate.clickedSatellites[i]];
 		radius = maxRadSat;
 
 		clearArround(obj.x, obj.y, radius);
 	}
-}
+};
 
 clearArround = function (x, y, radius) {
 	offContext.player.clearRect(x - radius, y - radius,
 					2 * radius, 2 * radius);
-}
+};

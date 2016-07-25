@@ -8,13 +8,13 @@ var visibleCanvas = {
 	background : document.getElementById("backgroundLayer"),
 	foreground : document.getElementById("foregroundLayer"),
 	gui : document.getElementById("guiLayer")
-}
+};
 
 var visibleContext = {
 	background : visibleCanvas.background.getContext("2d"),
 	foreground : visibleCanvas.foreground.getContext("2d"),
 	gui : visibleCanvas.gui.getContext("2d")
-}
+};
 
 for (var layer in visibleCanvas) {
 	visibleCanvas[layer].width = document.body.clientWidth;
@@ -31,14 +31,14 @@ var offCanvas = {
 	player : document.createElement("canvas"),
 	ships : document.createElement("canvas"),
 	stellar : document.createElement("canvas")
-}
+};
 
 var offContext = {
 	links : offCanvas.links.getContext("2d"),
 	player : offCanvas.player.getContext("2d"),
 	ships : offCanvas.ships.getContext("2d"),
 	stellar : offCanvas.stellar.getContext("2d")
-}
+};
 
 for (layer in offCanvas) {
 	offCanvas[layer].width = gameConstants.mapSize;

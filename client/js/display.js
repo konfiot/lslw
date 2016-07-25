@@ -42,7 +42,7 @@ Display = function () {
 
 drawDisplayClallback = function (id) {
 	var obj = engine.game[id];
-	console.log(obj);
+
 	switch (obj.type) {
 		case "star":
 			clearStellar(obj.x, obj.y, computeRadius("star", obj.count) + 20);
@@ -65,7 +65,7 @@ drawDisplayClallback = function (id) {
 
 			break;
 	}
-}
+};
 
 // Draws the star on the starContext
 drawStar = function (obj) {
@@ -104,7 +104,7 @@ drawStar = function (obj) {
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
 	ctx.fillText(obj.count, x, y + 5);
-}
+};
 
 drawLink = function (obj) {
 	var dx = parseInt(gameConstants.mapSize * 0.5);
@@ -115,7 +115,6 @@ drawLink = function (obj) {
 	var s2 = engine.game[obj.to];
 
 	ctx.setLineDash([20, 8]);
-
 
 	if (s1.id != playerIdList[0] && s1.id == s2.id) {
 		ctx.lineWidth = 5;
@@ -130,7 +129,7 @@ drawLink = function (obj) {
 	ctx.lineTo(s2.x, s2.y);
 	ctx.stroke();
 	ctx.closePath();
-}
+};
 
 drawSatellite = function (obj) {
 	var x = parseInt(obj.x);
@@ -139,14 +138,13 @@ drawSatellite = function (obj) {
 
 	ctx.clearRect(x - maxRadSat, y - maxRadSat, 2 * maxRadSat, 2 * maxRadSat);
 
-
 	var posX = -playerstate.centerX + obj.x - maxRadSat;
 	var posY = -playerstate.centerY + obj.y - maxRadSat;
 	ctx.drawImage(offSateliteCanvas,
 			maxRadSat * 2 * (obj.count - 2), 0, 2 * maxRadSat, 2 * maxRadSat,
 			x - maxRadSat, y - maxRadSat, 2 * maxRadSat, 2 * maxRadSat);
 
-}
+};
 
 drawShips = function (obj) {
 	var shipsToDraw = [];
@@ -210,15 +208,15 @@ drawShips = function (obj) {
 	for (j = 0; j < shipsToDraw.length; j++) {
 		drawSingleShip.apply(null, shipsToDraw[j]);
 	}
-}
+};
 
-clearShip = function(x, y) {
+clearShip = function (x, y) {
 	offContext.ships.clearRect(x - 50, y - 50, 100, 100);
-}
+};
 
 // Draw ships, works for different size : ships between stars or to get points
 drawSingleShip = function (id, x, y, theta, count, factor, highlight) {
-	var ctx = offContext.ships
+	var ctx = offContext.ships;
 	ctx.save();
 
 	var c = Math.cos(theta);
@@ -250,14 +248,14 @@ drawSingleShip = function (id, x, y, theta, count, factor, highlight) {
 	}
 
 	ctx.restore();
-}
+};
 
 clearStellar = function (x, y, radius) {
 	offContext.stellar.clearRect(x - radius, y - radius,
 					2 * radius, 2 * radius);
 	offContext.ships.clearRect(x - radius, y - radius,
 					2 * radius, 2 * radius);
-}
+};
 
 clearLink = function (obj) {
 	star1 = engine.game[obj.from];
@@ -265,4 +263,4 @@ clearLink = function (obj) {
 
 	offContext.links.clearRect(star1.x, star1.y,
 					star2.x - star1.x, star2.y - star1.y);
-}
+};
