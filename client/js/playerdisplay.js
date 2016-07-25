@@ -8,6 +8,9 @@ playerDisplay = function () {
 	// Draws an aura around the hovered star
 	if (playerstate.hoveredStarId !== -1) {
 		var hStar = engine.game[playerstate.hoveredStarId];
+		var x = hStar.x;
+		var y = hStar.y;
+		var radius = computeRadius("star", hStar.count);
 
 		ctx.save();
 
@@ -16,7 +19,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 12;
 
 		ctx.beginPath();
-		ctx.arc(hStar.x, hStar.y, computeRadius("star", hStar.count), 0, Math.PI * 2);
+		ctx.arc(x, y, radius, 0, Math.PI * 2);
 		ctx.fill();
 		ctx.stroke();
 
@@ -62,7 +65,7 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(star1.x, star1.y, ctx);
+		ctx.translate(star1.x, star1.y);
 		ctx.fillStyle = engine.game[star1.id].color[0];
 
 		ctx.beginPath();
@@ -79,12 +82,11 @@ playerDisplay = function () {
 	for (i = 0; i < playerstate.selectionAnimation.length ; i++) {
 		var current = playerstate.selectionAnimation[i];
 		var star = engine.game[current[0]];
-		var inc = 0.01; // TODO
+		var inc = (Date.now() / 1000 % (2 * Math.PI)); // TODO
 		var r = computeRadius("star", star.count) + 5;
 
 		ctx.save();
 
-		translate(star.x, star.y, ctx);
 		ctx.strokeStyle = "rgba(255, 255, 255, " + String(0.6 * (1 - current[2] * current[2])) + ")";
 		ctx.lineWidth = 10 - current[2] * 5;
 		ctx.setLineDash([Math.PI / 3 * r, Math.PI / 6 * r]);
@@ -92,7 +94,7 @@ playerDisplay = function () {
 		ctx.shadowBlur = 8;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, r, inc, Math.PI * 2 + inc);
+		ctx.arc(star.x, star.y, r, inc, Math.PI * 2 + inc);
 		ctx.stroke();
 		ctx.closePath();
 
@@ -105,14 +107,45 @@ playerDisplay = function () {
 
 		ctx.save();
 
-		translate(sat.x, sat.y, ctx);
 		ctx.fillStyle = whiteTransparentColor;
 
 		ctx.beginPath();
-		ctx.arc(0, 0, computeRadius("satellite", sat.count) + 8, 0, Math.PI * 2);
+		ctx.arc(sat.x, sat.y, computeRadius("satellite", sat.count) + 8, 0, Math.PI * 2);
 		ctx.fill();
 		ctx.closePath();
 
 		ctx.restore();
 	}
 };
+
+clearPlayerCallback = function () {
+	var obj, radius;
+
+	if (playerstate.hoveredStarId !== -1) {
+		obj = engine.game[playerstate.hoveredStarId];
+		radius = computeRadius("star", obj.count) + 20;
+
+		clearArroundStellar(obj.x, obj.y, radius);
+	}
+
+	if (playerstate.hoveredSatelliteId !== -1) {
+		obj = engine.game[playerstate.hoveredSatelliteId];
+		radius = maxRadSat;
+
+		clearArroundStellar(obj.x, obj.y, radius);
+	}
+
+	var select = playerstate.selectionAnimation;
+
+	for (var i = 0; i < select.length; i++) {
+		obj = engine.game[select[i][0]];
+		radius = computeRadius("star", obj.count) + 30;
+
+		clearArroundStellar(obj.x, obj.y, radius);
+	}
+}
+
+clearArroundStellar = function (x, y, radius) {
+	offContext.player.clearRect(x - radius, y - radius,
+					2 * radius, 2 * radius);
+}

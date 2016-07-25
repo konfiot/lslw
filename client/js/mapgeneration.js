@@ -3,7 +3,7 @@ Map generation using Delaunay Triangulation
 */
 delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var size = Math.sqrt(nPoints) * engine.options.minDistBetweenStars * (1 - density);
-	size = parseInt(gameConstants.mapSize * 0.5);
+	size = gameConstants.mapSize;
 	var nSat = parseInt(nPoints * 1.0);
 
 	var pointSet = [];
@@ -20,8 +20,8 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var r2;
 
 	while (n < nPoints) {
-		x = size * (Math.random() * 2 - 1);
-		y = size * (Math.random() * 2 - 1);
+		x = parseInt(size * Math.random());
+		y = parseInt(size * Math.random());
 		var isOk = true;
 
 		for (var k = 0; k < pointSet.length; k++) {
@@ -53,11 +53,11 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	// Remove some points
 	var idToRemoveList = [];
 
-	var radius2 = (size * 0.92) * (size * 0.92);
+	var radius2 = (size * 0.45) * (size * 0.45);
 
 	// Forming a circle
 	for (var s = 0; s < pointSet.length; s++) {
-		r2 = Math.pow(pointSet[s].x, 2) + Math.pow(pointSet[s].y, 2);
+		r2 = Math.pow(pointSet[s].x - size * 0.5, 2) + Math.pow(pointSet[s].y - size * 0.5, 2);
 
 		if (r2 > radius2) {
 			idToRemoveList.push(s);
@@ -113,8 +113,8 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	var createdSatellites = []; // x, y, count
 
 	for (var i = 0; i < nSat; i++) {
-		x = parseInt(size * (Math.random() * 2 - 1));
-		y = parseInt(size * (Math.random() * 2 - 1));
+		x = parseInt(size * Math.random());
+		y = parseInt(size * Math.random());
 		var count = 2 + parseInt(Math.random() * 3);
 
 		for (s in engine.game) {
@@ -139,42 +139,6 @@ delaunayMapGeneration = function (nPoints, density, sparsity) {
 	}
 
 	for (j = 0; j < createdSatellites.length; j++) {
-		engine.addSatellite(createdSatellites[j][0],
-							createdSatellites[j][1],
-							createdSatellites[j][2]);
-	}
-};
-
-generateSatellites = function (nSat, size) {
-	var createdSatellites = []; // x, y, count
-
-	for (var i = 0; i < nSat; i++) {
-		var x = parseInt(size * (Math.random() * 2 - 1));
-		var y = parseInt(size * (Math.random() * 2 - 1));
-		var count = 2 + parseInt(Math.random() * 3);
-
-		for (var s in engine.game) {
-
-			// Iteration over stars to find if the future satellite is not too close
-			if (engine.game[s].type === "star") {
-				var dx = x - engine.game[s].x;
-				var dy = y - engine.game[s].y;
-				var r = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
-				if (r < engine.options.satMinDist) {
-					var f = engine.options.satMinDist / r;
-
-					// Update coordinates
-					x = engine.game[s].x + f * dx;
-					y = engine.game[s].y + f * dy;
-				}
-			}
-		}
-
-		createdSatellites.push([x, y, count]);
-	}
-
-	for (var j = 0; j < createdSatellites.length; j++) {
 		engine.addSatellite(createdSatellites[j][0],
 							createdSatellites[j][1],
 							createdSatellites[j][2]);

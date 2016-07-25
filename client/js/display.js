@@ -5,73 +5,65 @@ The main display. Iterate through the game elements
 Display = function () {
 	// Setup the scene
 	var s = Math.min(playerstate.scale, 1.0);
-	/*
-	for (var layer in context) {
-		context[layer].clearRect(0, 0, canvas[layer].width / s, canvas[layer].height / s);
 
-		context[layer].save();
-
-		context[layer].translate(canvas[layer].width / 2, canvas[layer].height / 2);
-		context[layer].scale(playerstate.scale, playerstate.scale);
-	}*/
 	var viewportWidth = visibleCanvas.foreground.width;
 	var viewportHeight = visibleCanvas.foreground.height;
 	visibleContext.background.clearRect(0, 0, viewportWidth, viewportHeight);
 	visibleContext.foreground.clearRect(0, 0, viewportWidth, viewportHeight);
-	
+
 	// Draw the space TODO
 	space.draw();
 
 	// Draw what the player should see
 	playerDisplay();
-	
+
 	var toModify = [];
 	var tmpGameState = {};
 	var obj, oldObj = null;
-	
+
 	for (var i in engine.game) {
 		obj = engine.game[i];
-		
+
 		if (playerstate.oldGameState[i] !== undefined) {
 			oldObj = playerstate.oldGameState[i];
 
 			// TODO test if on screen first
 			switch (engine.game[i].type) {
 				case "star":
-					
+
 					if (obj.id !== oldObj.id ||
 						obj.count !== oldObj.count) {
 						toModify.push(i);
 					}
-					
+
 					break;
 				/*
 				case "satellite":
-				
+
 					if (obj.visible !== oldObj.visible) {
 						toModify.push(i);
 					}
-					
+
 					break;*/
-					
+
 				case "link":
-				
+
 					if (obj.from !== oldObj.from ||
 						obj.to !== oldObj.to) {
 						toModify.push(i);
 					}
-					
+
 					break;
 			}
 		} else {
 			toModify.push(i);
 		}
-		
+
 		tmpGameState[i] = obj;
 	}
-	
+
 	playerstate.oldGameState = tmpGameState;
-	
+
 	// Update the offscreen canvases
 	for (var m = 0; m < toModify.length; m++) {
 		obj = engine.game[toModify[m]];
@@ -79,7 +71,7 @@ Display = function () {
 		switch (obj.type) {
 			case "star":
 				drawStar(obj);
-			
+
 				break;
 
 			case "link":
@@ -93,85 +85,84 @@ Display = function () {
 				break;
 		}
 	}
-	
-	// Blit the offscreen canvases onto the visible one
-	var posX = parseInt(gameConstants.mapSize * 0.5 + playerstate.centerX);
-       	var posY = parseInt(gameConstants.mapSize * 0.5 + playerstate.centerY);
 
 
-	visibleContext.foreground.drawImage(offCanvas.links,
-				posX, posY, -viewportWidth / playerstate.scale, -viewportHeight / playerstate.scale,
-				0, 0, viewportWidth, viewportHeight);
-	visibleContext.foreground.drawImage(offCanvas.player,
-				posX, posY, -viewportWidth / playerstate.scale, -viewportHeight / playerstate.scale,
-				0, 0, viewportWidth, viewportHeight);
-	visibleContext.foreground.drawImage(offCanvas.stellar,
-				posX, posY, -viewportWidth / playerstate.scale, -viewportHeight / playerstate.scale,
-				0, 0, viewportWidth, viewportHeight);
-
-	
-/*
-	// Draw the ingame elements
+	// Draw the ships
 	var obj = null;
-	
+
 	for (var i in engine.game) {
 
+		if (engine.game[i].type == "ship") {
+			obj = engine.game[i];
+			var x, y;
+			var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
+									engine.options.shipSpeed + obj.initRadius;
 
-			case "ship": // Draw a SHIP
-				var x, y;
-				var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
-										engine.options.shipSpeed + obj.initRadius;
+			var dx = engine.game[obj.to].x - engine.game[obj.from].x;
+			var dy = engine.game[obj.to].y - engine.game[obj.from].y;
+			var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-				var dx = engine.game[obj.to].x - engine.game[obj.from].x;
-				var dy = engine.game[obj.to].y - engine.game[obj.from].y;
-				var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+			var theta = Math.acos(dx / L);
 
-				var theta = Math.acos(dx / L);
+			if (dy < 0) {
+				theta = -theta;
+			}
 
-				if (dy < 0) {
-					theta = -theta;
+			if (engine.game[obj.to].type === "star") {
+				// Draw a ship from star to star
+				if (crossedDistance < L) {
+					x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+					y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+
+					drawShip(obj.id, x, y, theta, obj.count, 1, false);
 				}
+			} else {
+				// Draw a ship going for a satellite
+				if (crossedDistance < Math.PI * L) {
+					var hasTakenSatellite = false;
 
-				if (engine.game[obj.to].type === "star") {
-
-					// Draw a ship from star to star
-					if (crossedDistance < L) {
-						x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
-						y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
-
-						drawShip(obj.id, x, y, theta, obj.count, 1, false);
+					if (obj.count > 1) {
+						hasTakenSatellite = true;
 					}
-				} else {
 
-					// Draw a ship going for a satellite
-					if (crossedDistance < Math.PI * L) {
-						var hasTakenSatellite = false;
+					var alpha = crossedDistance / L * 2;
+					var gamma = Math.PI * 0.5 + theta - alpha;
+					var epsilon = theta + (Math.PI - alpha) * 0.5;
+					var r2 = L * Math.sin(alpha / 2);
 
-						if (obj.count > 1) {
-							hasTakenSatellite = true;
-						}
+					x = engine.game[obj.from].x + r2 * Math.cos(epsilon);
+					y = engine.game[obj.from].y + r2 * Math.sin(epsilon);
 
-						var alpha = crossedDistance / L * 2;
-						var gamma = Math.PI * 0.5 + theta - alpha;
-						var epsilon = theta + (Math.PI - alpha) * 0.5;
-						var r2 = L * Math.sin(alpha / 2);
-
-						x = engine.game[obj.from].x + r2 * Math.cos(epsilon);
-						y = engine.game[obj.from].y + r2 * Math.sin(epsilon);
-
-						drawShip(obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite);
-					}
+					drawShip(obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite);
 				}
+			}
+		}
+	}
 
-				break;
+	// Blit the offscreen canvases onto the visible one
+	var posX = playerstate.centerX - parseInt(viewportWidth * 0.5 / playerstate.scale);
+	var posY = playerstate.centerY - parseInt(viewportHeight * 0.5 / playerstate.scale);
+	var viewportScaledWidth = viewportWidth / playerstate.scale;
+	var viewportScaledHeight = viewportHeight / playerstate.scale;
 
-	}*/
+	visibleContext.foreground.drawImage(offCanvas.links,
+				posX, posY, viewportScaledWidth, viewportScaledHeight,
+				0, 0, viewportWidth, viewportHeight);
+	visibleContext.foreground.drawImage(offCanvas.ships,
+				posX, posY, viewportScaledWidth, viewportScaledHeight,
+				0, 0, viewportWidth, viewportHeight);
+	visibleContext.foreground.drawImage(offCanvas.player,
+				posX, posY, viewportScaledWidth, viewportScaledHeight,
+				0, 0, viewportWidth, viewportHeight);
+	visibleContext.foreground.drawImage(offCanvas.stellar,
+				posX, posY, viewportScaledWidth, viewportScaledHeight,
+				0, 0, viewportWidth, viewportHeight);
 };
 
 // Draws the star on the starContext
 drawStar = function (obj) {
-	var x = parseInt(obj.x + gameConstants.mapSize * 0.5);
-	var y = parseInt(obj.y + gameConstants.mapSize * 0.5);
+	var x = parseInt(obj.x);
+	var y = parseInt(obj.y);
 	ctx = offContext.stellar;
 
 	// Clear the area first
@@ -227,20 +218,20 @@ drawLink = function (obj) {
 	}
 
 	ctx.beginPath();
-	ctx.moveTo(dx + s1.x, dx + s1.y);
-	ctx.lineTo(dy + s2.x, dy + s2.y);
+	ctx.moveTo(s1.x, s1.y);
+	ctx.lineTo(s2.x, s2.y);
 	ctx.stroke();
 	ctx.closePath();
 }
 
 drawSatellite = function (obj) {
-	var x = parseInt(obj.x + gameConstants.mapSize * 0.5);
-	var y = parseInt(obj.y + gameConstants.mapSize * 0.5);
+	var x = parseInt(obj.x);
+	var y = parseInt(obj.y);
 	ctx = offContext.stellar;
 
 	ctx.clearRect(x - maxRadSat, y - maxRadSat, 2 * maxRadSat, 2 * maxRadSat);
 
-		
+
 	var posX = -playerstate.centerX + obj.x - maxRadSat;
 	var posY = -playerstate.centerY + obj.y - maxRadSat;
 	ctx.drawImage(offSateliteCanvas,
@@ -251,35 +242,36 @@ drawSatellite = function (obj) {
 
 // Draw ships, works for different size : ships between stars or to get points
 drawShip = function (id, x, y, theta, count, factor, highlight) {
-	offContext.ships.save();
+	var ctx = offContext.ships
+	ctx.save();
 
 	var c = Math.cos(theta);
 	var s = Math.sin(theta);
 
-	translate(x, y, context.ships);
-	context.ships.scale(factor, factor);
-	context.ships.fillStyle = engine.game[id].color[0];
+	ctx.translate(x, y, ctx);
+	ctx.scale(factor, factor);
+	ctx.fillStyle = engine.game[id].color[0];
 
 	if (highlight) {
-		context.ships.shadowColor = whiteSemiColor;
-		context.ships.shadowBlur = 12;
+		ctx.shadowColor = whiteSemiColor;
+		ctx.shadowBlur = 12;
 	}
 
 	// Draws the shape
-	context.ships.beginPath();
-	context.ships.moveTo(-15 * s, 15 * c);
-	context.ships.lineTo(35 * c, 35 * s);
-	context.ships.lineTo(15 * s, -15 * c);
-	context.ships.lineTo(-10 * c, -10 * s);
-	context.ships.fill();
+	ctx.beginPath();
+	ctx.moveTo(-15 * s, 15 * c);
+	ctx.lineTo(35 * c, 35 * s);
+	ctx.lineTo(15 * s, -15 * c);
+	ctx.lineTo(-10 * c, -10 * s);
+	ctx.fill();
 
 	if (count !== 0) {
-		context.ships.font = "lighter 25px arial";
-		context.ships.fillStyle = whiteSemiColor;
-		context.ships.textAlign = "center";
-		context.ships.textBaseline = "middle";
-		context.ships.fillText(count, 30 * s, -30 * c);
+		ctx.font = "lighter 25px arial";
+		ctx.fillStyle = whiteSemiColor;
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillText(count, 30 * s, -30 * c);
 	}
 
-	context.ships.restore();
+	ctx.restore();
 }

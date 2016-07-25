@@ -20,13 +20,13 @@ Mouse.prototype.downHandler = function (e) {
 		this.lastClickedY = this.y;
 	}
 	this.isMouseDown = true;
-	playerstate.update();
+	playerstate.update(clearCallback);
 };
 
 // When the mouse button is released
 Mouse.prototype.upHandler = function (e) {
 	this.isMouseDown = false;
-	playerstate.update();
+	playerstate.update(clearCallback);
 };
 
 // When the mouse wheel is rotated
@@ -71,7 +71,7 @@ Mouse.prototype.moveHandler = function (e) {
 		playerstate.mouseDownMoved(dx, dy);
 	}
 
-	playerstate.update();
+	playerstate.update(clearCallback);
 
 	this.x = _mouseX;
 	this.y = _mouseY;

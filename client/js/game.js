@@ -40,7 +40,7 @@ function draw(timestamp) {
 	var dt = (timestamp - time) / 1000; // Seconds
 	time = timestamp;
 
-	playerstate.update();
+	playerstate.update(clearPlayerCallback);
 	engine.update();
 	Display();
 

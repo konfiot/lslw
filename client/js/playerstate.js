@@ -15,8 +15,8 @@ function PlayerState(id) {
 	this.hoveredSatelliteId = -1;
 	this.clickedSatellites = [];
 
-	this.centerX = 0;
-	this.centerY = 0;
+	this.centerX = parseInt(gameConstants.mapSize * 0.5);
+	this.centerY = parseInt(gameConstants.mapSize * 0.5);
 	this.scale = 1;
 
 	// [star number, start time, progression]
@@ -39,7 +39,10 @@ PlayerState.prototype.newSelection = function (starId) {
 };
 
 // Called when the mouse state changes
-PlayerState.prototype.update = function () {
+PlayerState.prototype.update = function (callback) {
+	// Call that function before updating
+	callback();
+
 	// Update animation
 	for (var i = this.selectionAnimation.length - 1; i >= 0 ; i--) {
 		// Needs to be animated ?
