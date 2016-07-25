@@ -27,6 +27,11 @@ document.addEventListener("DOMMouseScroll", wheelHandler, false);
 document.addEventListener("mousewheel", wheelHandler, false);
 document.addEventListener("mousemove", moveHandler, false);
 
+// Load Graphics
+for (var i in engine.game) {
+	drawDisplayClallback(i)
+}
+
 time = null;
 globalTimer = null;
 
@@ -41,7 +46,7 @@ function draw(timestamp) {
 	time = timestamp;
 
 	playerstate.update(clearPlayerCallback);
-	engine.update();
+	engine.update(drawDisplayClallback);
 	Display();
 
 	requestAnimationFrame(draw);

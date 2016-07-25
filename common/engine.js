@@ -53,7 +53,7 @@ Engine.prototype.midTrip = function (id) {
 };
 
 // Updates the game
-Engine.prototype.update = function () {
+Engine.prototype.update = function (drawCallback) {
 	time = this.serverTimestamp();
 
 	for (var i in this.game) {
@@ -65,17 +65,15 @@ Engine.prototype.update = function () {
 
 				if (this.finished(i)) {
 					// The ship arrived
-
 					if (dest.type === "satellite") {
 						dest = this.game[obj.from];
-						obj.count = Math.floor(obj.count * 0.5);
 					}
 
 					if (obj.id === dest.id) {
 						// The ship is for reinforcemnt
 						dest.count += obj.count;
 					} else {
-						newCount = dest.count - obj.count;
+						newCount = dest.count - Math.floor(obj.count * 0.5);;
 
 						if (newCount >= 0) {
 							// Not enough to convert
@@ -83,16 +81,21 @@ Engine.prototype.update = function () {
 						} else {
 							// The star is conquered
 							dest.count = -newCount - 1;
-							dest.id = obj.id;
+							this.changeStarId(obj.to, obj.id, drawCallback);
 						}
 					}
 
+					drawCallback(obj.to);
+					drawCallback(obj.from);
 					this.del(i);
 
 				} else if (this.midTrip(i)) {
 					// The ship is at midtrip toward satellites
 					obj.count += dest.count;
 					dest.visible = false;
+
+					// The satellite needs to be refreshed
+					drawCallback(obj.to);
 				}
 
 				break;
@@ -105,14 +108,27 @@ Engine.prototype.update = function () {
 					// Only send if the star count is sup to 5
 					if (c >= 5) {
 						this.move(i, obj.automation[s][0],
-									obj.automation[s][1],
-									c);
+								obj.automation[s][1],
+								c, function () {}, clearCallback);
 					}
 				}
 				break;
 		}
 	}
 };
+
+// Properly changes the id and the call links update
+Engine.prototype.changeStarId = function (starId, playerId, drawCallback) {
+	this.game[starId].id = playerId;
+
+	for (var i in this.game) {
+		var obj = this.game[i];
+
+		if (obj.type === "link" && (obj.from === starId || obj.to === starId)) {
+			drawCallback(i);
+		}
+	}
+}
 
 // Returns the id of the closest star from a given satellite. -1 if out of reach
 Engine.prototype.getNearestStar = function (playerId, satelliteId, countTest) {
@@ -189,7 +205,7 @@ Engine.prototype.fullSync = function () {
 };
 
 // Send a ship to harvest a satellite
-Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, callback) {
+Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, callback, clearCallback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
 	}
@@ -208,7 +224,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, cal
 		}
 
 		if (nearest !== -1) {
-			this.move(playerId, nearest, satelliteId, 1, callback);
+			this.move(playerId, nearest, satelliteId, 1, callback, clearCallback);
 		} else {
 			callback(false);
 		}
@@ -216,7 +232,7 @@ Engine.prototype.getSatellite = function (playerId, satelliteId, fromStarId, cal
 };
 
 // Send a ship from one star to another
-Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
+Engine.prototype.move = function (playerId, fromId, toId, count, callback, clearCallback) {
 	if (typeof callback !== "function") {
 		callback = function () {};
 	}
@@ -224,7 +240,7 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 	if (this.possibleTrip(fromId, toId)) {
 		that = this;
 		var radius = computeRadius("star", this.game[fromId].count);
-		// TODO
+		console.log(this.game[fromId].type, count);
 		this.game[fromId].count -= count;
 		this.io.move(playerId, fromId, toId, count, function (res) {
 			if (res) {
@@ -238,11 +254,14 @@ Engine.prototype.move = function (playerId, fromId, toId, count, callback) {
 					timestamp: res.ts
 				};
 				callback(res.id);
-				// setTimeout(that.update, this.ETA(i) - this.serverTimestamp() + 50);
 			} else {
 				callback(false);
 			}
 		});
+
+		// Something needs to be cleared TODO calback not working
+		drawDisplayClallback(fromId);
+		//clearCallback(fromId);
 	}
 };
 

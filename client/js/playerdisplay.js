@@ -125,27 +125,32 @@ clearPlayerCallback = function () {
 		obj = engine.game[playerstate.hoveredStarId];
 		radius = computeRadius("star", obj.count) + 20;
 
-		clearArroundStellar(obj.x, obj.y, radius);
+		clearArround(obj.x, obj.y, radius);
 	}
 
 	if (playerstate.hoveredSatelliteId !== -1) {
 		obj = engine.game[playerstate.hoveredSatelliteId];
 		radius = maxRadSat;
 
-		clearArroundStellar(obj.x, obj.y, radius);
+		clearArround(obj.x, obj.y, radius);
 	}
 
-	var select = playerstate.selectionAnimation;
-
-	for (var i = 0; i < select.length; i++) {
-		obj = engine.game[select[i][0]];
+	for (var i = 0; i < playerstate.selectionAnimation.length; i++) {
+		obj = engine.game[playerstate.selectionAnimation[i][0]];
 		radius = computeRadius("star", obj.count) + 30;
 
-		clearArroundStellar(obj.x, obj.y, radius);
+		clearArround(obj.x, obj.y, radius);
+	}
+
+	for (var i = 0; i < playerstate.clickedSatellites.length; i++) {
+		obj = engine.game[playerstate.clickedSatellites[i]];
+		radius = maxRadSat;
+
+		clearArround(obj.x, obj.y, radius);
 	}
 }
 
-clearArroundStellar = function (x, y, radius) {
+clearArround = function (x, y, radius) {
 	offContext.player.clearRect(x - radius, y - radius,
 					2 * radius, 2 * radius);
 }

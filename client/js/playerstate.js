@@ -21,8 +21,6 @@ function PlayerState(id) {
 
 	// [star number, start time, progression]
 	this.selectionAnimation = [];
-
-	this.oldGameState = {};
 }
 
 PlayerState.prototype.newSelection = function (starId) {
@@ -89,10 +87,11 @@ PlayerState.prototype.update = function (callback) {
 		var callbackSat = (function (id) {
 			if (id !== false) {
 				this.clickedSatellites.push(this.hoveredSatelliteId);
+				drawDisplayClallback(id);
 			}
 		}).bind(this);
 
-		engine.getSatellite(this.id, this.hoveredSatelliteId, this.selectedStar, callbackSat);
+		engine.getSatellite(this.id, this.hoveredSatelliteId, this.selectedStar, callbackSat, callback);
 	}
 
 	// Update which star is selected
@@ -139,7 +138,7 @@ PlayerState.prototype.update = function (callback) {
 		var p = engine.game[this.previousClickedStar].count;
 
 		if (p > 0) {
-			engine.move(this.id, this.previousClickedStar, this.clickedStar, p);
+			engine.move(this.id, this.previousClickedStar, this.clickedStar, p, function () {}, drawDisplayClallback);
 		}
 
 		this.newSelection(-1);

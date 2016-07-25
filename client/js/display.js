@@ -17,127 +17,8 @@ Display = function () {
 	// Draw what the player should see
 	playerDisplay();
 
-	var toModify = [];
-	var tmpGameState = {};
-	var obj, oldObj = null;
-
-	for (var i in engine.game) {
-		obj = engine.game[i];
-
-		if (playerstate.oldGameState[i] !== undefined) {
-			oldObj = playerstate.oldGameState[i];
-
-			// TODO test if on screen first
-			switch (engine.game[i].type) {
-				case "star":
-
-					if (obj.id !== oldObj.id ||
-						obj.count !== oldObj.count) {
-						toModify.push(i);
-					}
-
-					break;
-				/*
-				case "satellite":
-
-					if (obj.visible !== oldObj.visible) {
-						toModify.push(i);
-					}
-
-					break;*/
-
-				case "link":
-
-					if (obj.from !== oldObj.from ||
-						obj.to !== oldObj.to) {
-						toModify.push(i);
-					}
-
-					break;
-			}
-		} else {
-			toModify.push(i);
-		}
-
-		tmpGameState[i] = obj;
-	}
-
-	playerstate.oldGameState = tmpGameState;
-
-	// Update the offscreen canvases
-	for (var m = 0; m < toModify.length; m++) {
-		obj = engine.game[toModify[m]];
-
-		switch (obj.type) {
-			case "star":
-				drawStar(obj);
-
-				break;
-
-			case "link":
-				drawLink(obj);
-
-				break;
-
-			case "satellite":
-				drawSatellite(obj);
-
-				break;
-		}
-	}
-
-
 	// Draw the ships
-	var obj = null;
-
-	for (var i in engine.game) {
-
-		if (engine.game[i].type == "ship") {
-			obj = engine.game[i];
-			var x, y;
-			var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
-									engine.options.shipSpeed + obj.initRadius;
-
-			var dx = engine.game[obj.to].x - engine.game[obj.from].x;
-			var dy = engine.game[obj.to].y - engine.game[obj.from].y;
-			var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
-			var theta = Math.acos(dx / L);
-
-			if (dy < 0) {
-				theta = -theta;
-			}
-
-			if (engine.game[obj.to].type === "star") {
-				// Draw a ship from star to star
-				if (crossedDistance < L) {
-					x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
-					y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
-
-					drawShip(obj.id, x, y, theta, obj.count, 1, false);
-				}
-			} else {
-				// Draw a ship going for a satellite
-				if (crossedDistance < Math.PI * L) {
-					var hasTakenSatellite = false;
-
-					if (obj.count > 1) {
-						hasTakenSatellite = true;
-					}
-
-					var alpha = crossedDistance / L * 2;
-					var gamma = Math.PI * 0.5 + theta - alpha;
-					var epsilon = theta + (Math.PI - alpha) * 0.5;
-					var r2 = L * Math.sin(alpha / 2);
-
-					x = engine.game[obj.from].x + r2 * Math.cos(epsilon);
-					y = engine.game[obj.from].y + r2 * Math.sin(epsilon);
-
-					drawShip(obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite);
-				}
-			}
-		}
-	}
+	drawShips();
 
 	// Blit the offscreen canvases onto the visible one
 	var posX = playerstate.centerX - parseInt(viewportWidth * 0.5 / playerstate.scale);
@@ -158,6 +39,33 @@ Display = function () {
 				posX, posY, viewportScaledWidth, viewportScaledHeight,
 				0, 0, viewportWidth, viewportHeight);
 };
+
+drawDisplayClallback = function (id) {
+	var obj = engine.game[id];
+	console.log(obj);
+	switch (obj.type) {
+		case "star":
+			clearStellar(obj.x, obj.y, computeRadius("star", obj.count) + 20);
+			drawStar(obj);
+
+			break;
+
+		case "link":
+			// No need to clear !
+			drawLink(obj);
+
+			break;
+
+		case "satellite":
+			clearStellar(obj.x, obj.y, maxRadSat);
+
+			if (obj.visible) {
+				drawSatellite(obj);
+			}
+
+			break;
+	}
+}
 
 // Draws the star on the starContext
 drawStar = function (obj) {
@@ -214,7 +122,7 @@ drawLink = function (obj) {
 		ctx.strokeStyle = engine.game[s1.id].color[0];
 	} else {
 		ctx.lineWidth = 3;
-		ctx.strokeStyle = whiteTransparentColor;
+		ctx.strokeStyle = greyColor;
 	}
 
 	ctx.beginPath();
@@ -240,8 +148,76 @@ drawSatellite = function (obj) {
 
 }
 
+drawShips = function (obj) {
+	var shipsToDraw = [];
+
+	for (var i in engine.game) {
+		obj = engine.game[i];
+
+		// Determine its properties
+		if (obj.type === "ship") {
+			var x, y;
+			var crossedDistance = (engine.serverTimestamp() - obj.timestamp) / 1000 *
+						engine.options.shipSpeed + obj.initRadius;
+
+			var dx = engine.game[obj.to].x - engine.game[obj.from].x;
+			var dy = engine.game[obj.to].y - engine.game[obj.from].y;
+			var L = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+			var theta = Math.acos(dx / L);
+
+			if (dy < 0) {
+				theta = -theta;
+			}
+
+			if (engine.game[obj.to].type === "star") {
+				// Draw a ship from star to star
+				if (crossedDistance < L) {
+					x = engine.game[obj.from].x + crossedDistance * Math.cos(theta);
+					y = engine.game[obj.from].y + crossedDistance * Math.sin(theta);
+
+					shipsToDraw.push([obj.id, x, y, theta, obj.count, 1, false]);
+				}
+			} else {
+				// Draw a ship going for a satellite
+				if (crossedDistance < Math.PI * L) {
+					var hasTakenSatellite = false;
+
+					if (obj.count > 1) {
+						hasTakenSatellite = true;
+					}
+
+					var alpha = crossedDistance / L * 2;
+					var gamma = Math.PI * 0.5 + theta - alpha;
+					var epsilon = theta + (Math.PI - alpha) * 0.5;
+					var r2 = L * Math.sin(alpha / 2);
+
+					x = engine.game[obj.from].x + r2 * Math.cos(epsilon);
+					y = engine.game[obj.from].y + r2 * Math.sin(epsilon);
+
+					shipsToDraw.push([obj.id, x, y, gamma, 0, 0.5, hasTakenSatellite]);
+				}
+			}
+		}
+	}
+
+	// Clear
+	for (var j = 0; j < shipsToDraw.length; j++) {
+		clearShip(shipsToDraw[j][1], shipsToDraw[j][2]);
+	}
+
+	// Draw
+	for (j = 0; j < shipsToDraw.length; j++) {
+		drawSingleShip.apply(null, shipsToDraw[j]);
+	}
+}
+
+clearShip = function(x, y) {
+	offContext.ships.clearRect(x - 50, y - 50, 100, 100);
+}
+
 // Draw ships, works for different size : ships between stars or to get points
-drawShip = function (id, x, y, theta, count, factor, highlight) {
+drawSingleShip = function (id, x, y, theta, count, factor, highlight) {
 	var ctx = offContext.ships
 	ctx.save();
 
@@ -274,4 +250,19 @@ drawShip = function (id, x, y, theta, count, factor, highlight) {
 	}
 
 	ctx.restore();
+}
+
+clearStellar = function (x, y, radius) {
+	offContext.stellar.clearRect(x - radius, y - radius,
+					2 * radius, 2 * radius);
+	offContext.ships.clearRect(x - radius, y - radius,
+					2 * radius, 2 * radius);
+}
+
+clearLink = function (obj) {
+	star1 = engine.game[obj.from];
+	star2 = engine.game[obj.to];
+
+	offContext.links.clearRect(star1.x, star1.y,
+					star2.x - star1.x, star2.y - star1.y);
 }
